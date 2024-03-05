@@ -18,6 +18,7 @@
   import Settings from '#modules/Settings.svelte'
   import LayoutIntro from '#modules/LayoutIntro.svelte'
   import Layout from '#modules/Layout.svelte'
+  import SignUp from '#modules/SignUp.svelte'
 
   st.fromTester().then() // we must check for tester instructions before doing anything
 
@@ -50,6 +51,7 @@
     route('txs', Txs),
     route('/comment', Comment, st.linked, '/'),
     route('/settings', Settings, () => !u.empty($st.choices), '/' ),
+    route('/sign-up', SignUp, true, '/sign-in', LayoutIntro),
   ]
 
   onMount(async () => {
