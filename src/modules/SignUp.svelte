@@ -3,7 +3,12 @@
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
 
+<<<<<<< HEAD
   const credentials = {}
+=======
+
+  let credentials = { fullName: '', email: '', phone: '', zip: '', country: '' }
+>>>>>>> signin_ini_sherry
   let statusMsg = ''
 
   function showEr(msg) { u.alert(msg); statusMsg = '' }
@@ -39,16 +44,24 @@
 </script>
 
 <svelte:head>
+<<<<<<< HEAD
   <title>CGPay - Sign In</title>
 </svelte:head>
 
 <section class="page card" id="sign-in">
+=======
+  <title>CGPay - Sign Up</title>
+</svelte:head>
+
+<section class="page card" id="sign-up">
+>>>>>>> signin_ini_sherry
   <header>
     <img src= { cgLogo } alt='Common Good Logo' />
     <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
   </header>
 
   <div class='content'>
+<<<<<<< HEAD
     <h2>Sign In</h2>
     <form on:submit|preventDefault={signIn}>
       <label class="visuallyhidden" for="account-id">Account ID or Email Address</label>
@@ -59,10 +72,34 @@
       <a data-testid="lnk-reset" href="https://new.commongood.earth/settings/password/" target="_blank">Reset password</a>
        <a class="signup" data-testid="lnk-signup" href="https://new.commongood.earth/signup" target="_blank">Not a member yet? Sign Up</a>
       <p class="status">{statusMsg}</p>
+=======
+    <h2>Sign Up </h2>
+
+  <div class="left-align">
+      If you already have a Common Good account,<a class="signup inline-link" data-testid="lnk-signup" href="/sign-in" target="_blank">Sign In.</a>
+  </div>
+  <div class="left-align">
+      Did you want to open a COMPANY account instead?
+  </div>
+   
+    <form on:submit|preventDefault={signIn}>
+      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your Full Name" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
+      <small>Your full name, properly capitalized, as you would like it to appear to other members and member companies.</small>
+      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your phone number" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
+      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Email" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
+      <small>Type carefully. All emails from the system will be sent to this address. It will not be made public, but will be viewable by accounts you transact with (you can choose greater privacy by clicking "Advanced" on the Preferences Settings page).</small>
+      <label for="full-name">Postal Code: </label>
+      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Physical location postal code" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
+      <button data-testid="btn-signin" type="submit">Sign Up</button>
+>>>>>>> signin_ini_sherry
     </form>
   </div>
 </section>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> signin_ini_sherry
 <style lang='stylus'>
   a
     padding 0 $s-1
@@ -115,4 +152,8 @@
     font-style italic
     letter-spacing 0.0125rem
     text-align center
+<<<<<<< HEAD
+=======
+
+>>>>>>> signin_ini_sherry
 </style>
