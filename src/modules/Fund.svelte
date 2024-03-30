@@ -3,12 +3,26 @@
     import st from'#store.js'
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
     import checkHint from '#modules/assets/check-hint.png'
+    import { slide } from 'svelte/transition';
     import {onMount} from "svelte";
 
     let credentials = { routingNumber: '', bankAccount: '', refills: false}
     let statusMsg = ''
     let showHint = false; // Controls the visibility of the hint image
+    let showModal = false;
+    let showDetails = false;
 
+    function toggleDetails() {
+        showDetails = !showDetails;
+    }
+
+    onMount(() => {
+        showModal = true; // Automatically show the modal when the component mounts
+    });
+
+    function toggleModal() {
+        showModal = !showModal;
+    }
     async function signIn() {
         statusMsg = 'Finding your account(s)...'
         try {
@@ -81,10 +95,19 @@
     <div class='content'>
         <h2>Connect a Checking Account </h2>
 
-    <div class="left-align">
-        <p>You will need a way to get funds in and/or out of your Common Good account, so you will probably want to connect a bank account.</p>
-        <p><b>NOTE:</b> Funds are transferred only at your explicit request or when you approve an invoice, overspend your Common Good balance, or choose automatic refills. See our <a href="https://CommonGood.earth/about-us/privacy-and-security?region=NEW" tabindex="-1" target="_blank" rel="noreferrer noopener">Privacy and Security Policy</a> for how your information is protected.</p>
-    </div>
+        <div class="left-align">
+            <p><span class="show-note-link" on:click={toggleModal}>What is this?</span></p>
+        </div>
+
+        {#if showModal}
+            <div class="backdrop" on:click={toggleModal}></div>
+            <div class="modal" transition:slide={{ y: 300, duration: 300 }}>
+                <div class="close-button" on:click={toggleModal}>X</div>
+                <p>You will need a way to get funds in and/or out of your Common Good account, so you will probably want to connect a bank account.<br><br>
+                    <b>NOTE:</b> Funds are transferred only at your explicit request or when you approve an invoice, overspend your Common Good balance, or choose automatic refills. See our
+                    <a href="https://CommonGood.earth/about-us/privacy-and-security?region=NEW" tabindex="-1" target="_blank" rel="noreferrer noopener">Privacy and Security Policy</a> for how your information is protected.</p>
+            </div>
+        {/if}
         <form on:submit|preventDefault={handleFundSubmit}>
             <small>Type carefully your bank's routing number (check to be sure it's correct!). <a href="javascript:void(0);" on:click|stopPropagation={toggleHint} class="help-link">Need help finding your routing info?</a></small>
             {#if showHint}
@@ -96,13 +119,17 @@
             <small>Type carefully your account number.</small>
             <input data-testid="input-identifier" name="account-id" type="text" placeholder="Account" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.bankAccount} required />
             <div>
-                <label for="refills">Refill your Common Good Account automatically? </label>
-                <select bind:value={credentials.refills} id="refills">
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
+                <label for="refills">Refill your Common Good Account automatically?<span class="why-link" on:click={toggleDetails}>(Why should I enable this?)</span></label>
+                <select bind:value="{credentials.refills}" id="refills">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                 </select>
-                <small><i>*Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.</i></small>
 
+                {#if showDetails}
+                    <div class="details">
+                        <small><i>*Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.</i></small>
+                    </div>
+                {/if}
             </div>
             <button data-testid="btn-connect" type="submit">Connect</button>
         </form>
@@ -193,5 +220,51 @@
         width: 600px; /* Fixed width for larger screens */
         height: 400px; /* Fixed height for larger screens */
       }
+    }
+
+    .modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      border-top: 1px solid #ccc;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      cursor: pointer;
+      /* Additional styling as needed */
+    }
+
+    .backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .show-note-link {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    .why-link {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+      margin-left: 5px;
+    }
+
+    .details {
+      margin-top: 10px;
     }
 </style>

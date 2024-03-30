@@ -234,7 +234,7 @@ const u = {
   pageUri() { return location.href.substring(location.href.lastIndexOf('/') + 1) },
   isApple() { return /iPhone|iPod|iPad/i.test(navigator.userAgent) },
   isAndroid() { return !u.isApple() && /Android/i.test(navigator.userAgent) },
-  go(page, setTrail = true) { 
+  go(page, setTrail = true) {
     if (setTrail) st.setTrail(u.st()?.pending ? '' : u.pageUri())
     st.setPending(false) // must come after setTrail
     st.setLeft(u.atHome(page) ? 'logo' : 'back')

@@ -36,15 +36,16 @@
             }
         }
     }
+
 </script>
 
 <svelte:head>
     <title>CGPay - Reset Password</title>
-    <button class="back-button" on:click={goBack}>Back</button>
 </svelte:head>
 
 <section class="page card" id="reset-password">
     <header>
+        <button class="back-button" on:click={u.goBack}></button>
         <img src= { cgLogo } alt='Common Good Logo' />
         <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
     </header>
@@ -54,7 +55,7 @@
         <form on:submit|preventDefault={signIn}>
             <small>Your account ID or email address</small>
             <input data-testid="input-identifier" name="account-id" type="text" placeholder="Account" autocomplete="off" autocapitalize="off" bind:value={ credentials.account } required />
-            <button data-testid="btn-signin" type="submit">Sign Up</button>
+            <button data-testid="btn-signin" type="submit">Submit</button>
         </form>
     </div>
 </section>
@@ -82,6 +83,7 @@
     margin-bottom $s0
 
   header
+    margin-top: $s5;
     contentCentered()
     margin-bottom $s5
 
@@ -111,4 +113,22 @@
     font-style italic
     letter-spacing 0.0125rem
     text-align center
+
+  .back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    cursor: pointer;
+    background-image: url('/src/modules/assets/back-arrow.png'); /* Adjusted path */
+
+    background-color: transparent;
+    background-size: 30px 30px; /* Size of the arrow image */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+
+  }
 </style>
