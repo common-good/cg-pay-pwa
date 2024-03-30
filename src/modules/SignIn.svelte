@@ -56,7 +56,7 @@
       <label class="visuallyhidden" for="password">Password</label>
       <input data-testid="input-password" name="password" type="password" placeholder="Password" autocomplete="off" autocapitalize="off" bind:value={ credentials.password } required />
       <button data-testid="btn-signin" type="submit">Sign In</button>
-      <a data-testid="lnk-reset" href="https://new.commongood.earth/settings/password/" target="_blank">Reset password</a>
+      <a data-testid="lnk-reset" href="reset-password" target="_blank">Reset password</a>
        <a class="signup" data-testid="lnk-signup" href="https://new.commongood.earth/signup" target="_blank">Not a member yet? Sign Up</a>
       <p class="status">{statusMsg}</p>
     </form>

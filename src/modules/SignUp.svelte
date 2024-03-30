@@ -58,7 +58,7 @@
   <div class="left-align">
       Did you want to open a COMPANY account instead?
   </div>
-   
+
     <form on:submit|preventDefault={signIn}>
       <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your Full Name" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
       <small>Your full name, properly capitalized, as you would like it to appear to other members and member companies.</small>
