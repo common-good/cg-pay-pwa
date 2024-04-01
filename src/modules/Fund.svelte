@@ -88,6 +88,7 @@
 
 <section class="page card" id="fund">
     <header>
+        <button class="back-button" on:click={u.goBack}></button>
         <img src= { cgLogo } alt='Common Good Logo' />
         <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
     </header>
@@ -158,6 +159,7 @@
         margin-bottom $s0
 
     header
+        margin-top: $s5;
         contentCentered()
         margin-bottom $s5
 
@@ -266,5 +268,22 @@
 
     .details {
       margin-top: 10px;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+
+      border: none;
+      cursor: pointer;
+      background-image: url('/src/modules/assets/back-arrow.png'); /* Adjusted path */
+
+      background-color: transparent;
+      background-size: 30px 30px; /* Size of the arrow image */
+      background-position: center; /* Center the background image */
+      background-repeat: no-repeat; /* Prevent the image from repeating */
     }
 </style>
