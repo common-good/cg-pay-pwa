@@ -2,6 +2,7 @@
   import u from '#utils.js';
   import st from '#store.js';
   import cgLogo from '#modules/assets/cg-logo-300.png?webp';
+  import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
 
   let credentials = {
     ssn: ''
@@ -60,9 +61,11 @@
   <title>CGPay - Fund</title>
 </svelte:head>
 
-<section class="page card" id="fund">
+<section class="page card" id="confirm-ssn">
+  <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
+    <BackIcon width={'100%'} height={'100%'} />
+  </button>
   <header>
-    <button class="back-button" on:click={u.goBack}></button>
     <img src={cgLogo} alt="Common Good Logo" />
     <h1>CGPay{u.realData() ? '' : ' DEMO'}</h1>
   </header>
@@ -107,6 +110,10 @@
         &.signup
           margin-bottom $s1
 
+    .btn
+      height 100px
+      width 100px
+
     button
         cgButton()
         margin-bottom $s2
@@ -119,23 +126,32 @@
         margin-bottom $s0
 
     header
-        margin-top: $s5;
-        contentCentered()
-        margin-bottom $s5
+      margin-top: 5rem;
+      contentCentered()
+      margin-bottom 3rem;
 
     img
-        width 75px
-        margin 0 $s2 0 0
+      width 75px
+      margin 0 $s2 0 0
 
-    .card
-        height 100%
-        display flex
-        flex-direction column
-        align-items center
-        background $c-blue-light
-        box-shadow: 2px 2px 4px $c-gray-dark
-        border-radius: 2%
-        padding $s1
+    .card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: $c-blue-light;
+      box-shadow: 2px 2px 4px $c-gray-dark;
+      border-radius: 2%;
+      padding: $s1;
+      position: relative; /* Make this a positioning context for the button */
+    }
+
+    .btn.top-left {
+      position: absolute;
+      top: 2px;
+      left: 0.5px;
+      transform: scale(0.58);
+    }
 
     .content
         width 100%
@@ -158,20 +174,4 @@
         margin-top: 20px;
     }
 
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-
-      border: none;
-      cursor: pointer;
-      background-image: url('/src/modules/assets/back-arrow.png'); /* Adjusted path */
-
-      background-color: transparent;
-      background-size: 30px 30px; /* Size of the arrow image */
-      background-position: center; /* Center the background image */
-      background-repeat: no-repeat; /* Prevent the image from repeating */
-    }
 </style>

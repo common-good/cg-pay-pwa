@@ -21,7 +21,8 @@
   import SignUp from '#modules/SignUp.svelte'
   import Fund from '#modules/Fund.svelte'
   import ConfirmSSN from '#modules/ConfirmSSN.svelte'
-  import ResetPassword from "#modules/ResetPassword.svelte";
+  import ResetPassword from "#modules/ResetPassword.svelte"
+  import PhotoID from "#modules/PhotoID.svelte"
 
   st.fromTester().then() // we must check for tester instructions before doing anything
 
@@ -57,7 +58,8 @@
     route('/sign-up', SignUp, true, '/sign-in', LayoutIntro),
     route('/fund', Fund, true, '/sign-in', LayoutIntro),
     route('/ssn', ConfirmSSN, true, '/sign-in', LayoutIntro),
-    route('/reset-password', ResetPassword, true, '/sign-in', LayoutIntro)
+    route('/reset-password', ResetPassword, true, '/sign-in', LayoutIntro),
+    route('/photo', PhotoID, true, '/sign-in', LayoutIntro)
   ]
 
   onMount(async () => {
