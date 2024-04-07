@@ -36,7 +36,16 @@ const constants = {
   sockets: {
     test: 'wss://demo.commongood.earth:8081',
     real: 'wss://new.commongood.earth:8081',
-  }
+  },
+
+  PROJECT: "Common Good",
+  R_STATEMENT_COST: 10,
+
+// Common Good Finance email and other data
+  CGF_LEGALNAME: 'Society to Benefit Everyone, Inc.',
+  CGF_POSTALADDR: 'c/o Common Good Finance, PO Box 21, Ashfield, MA 01330',
+
+  CREDITLIMIT: 10,
 }
 
 export default constants
