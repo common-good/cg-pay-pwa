@@ -6,6 +6,7 @@
     import StepsLeft from './StepsLeft.svelte';
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+    import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
     import SlidingModal from "#modules/SlidingModal.svelte";
 
     let credentials = { routingNumber: '', bankAccount: '', refills: 'false'}
@@ -121,10 +122,16 @@
     </header>
 
     <div class='content'>
-        <h2>Connect a Checking Account <span class="show-note-link" on:click={toggleModal}>⍰</span></h2>
+        <h2>
+            <div class="text-with-icon">
+                <span>Connect a Checking Account</span>
+                <span class="show-note-link" on:click="{toggleModal}">
+                  <HelpBoxIcon />
+                </span>
+            </div>
+        </h2>
 
         <div class="left-align">
-
         </div>
 
         <SlidingModal bind:showModal>
@@ -274,8 +281,6 @@
       }
     }
 
-
-
     .show-note-link {
       cursor: pointer;
       color: blue;
@@ -313,4 +318,9 @@
       margin-top: 2px; /* Adds a small space between the input and the box */
     }
 
+    .text-with-icon {
+      display: flex;
+      align-items: center; /* This ensures the icon and text are aligned at their centers */
+      gap: 0.5rem; /* Optional: adds some space between the icon and the text */
+    }
 </style>

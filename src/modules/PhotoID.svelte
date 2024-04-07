@@ -6,6 +6,7 @@
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import SlidingModal from "#modules/SlidingModal.svelte";
+  import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
   import { fade } from 'svelte/transition';
 
   let selectedPhoto;
@@ -71,8 +72,7 @@
 </script>
 
 <svelte:head>
-    <button on:click={u.goBack} class="btn" data-testid="btn-back" aria-label="Back"><BackIcon width={'100%'} height={'100%'} /></button>
-    <title>CGPay - Reset Password</title>
+    <title>CGPay - Photo ID</title>
 </svelte:head>
 
 <section class="page card" id="photo-upload-module">
@@ -95,10 +95,15 @@
     </SlidingModal>
 
     <div class="content">
-        <h2>Upload and Crop Your Photo ID<span class="show-note-link" on:click={toggleModal}>⍰</span></h2>
-        <p class="prompt-text">
-            Drag to reposition, adjust size and rotation, then click the button to upload. Please feel free to email a photo to us if that is easier for you.
-        </p>
+        <h2>
+            <div class="text-with-icon">
+                <span>Upload and Crop Your Photo ID</span>
+                <span class="show-note-link" on:click="{toggleModal}">
+                  <HelpBoxIcon />
+                </span>
+            </div>
+        </h2>
+
         <div class="photo-upload">
             <button class="submit-button" on:click={() => document.getElementById('photo-upload-input').click()}>{uploadButtonText}</button>
             <!--label for="photo-upload-input" class="photo-upload-label">Choose Photo</label-->
@@ -108,6 +113,9 @@
                 <button class="submit-button" on:click={handleSubmit}>Confirm Crop</button>
             {/if}
         </div>
+        <p class="prompt-text">
+            Drag to reposition, adjust size and rotation, then click the button to upload. Please feel free to email a photo to us if that is easier for you.
+        </p>
     </div>
     {#if showConfirmationDialogue}
         <div class="overlay">
@@ -280,6 +288,11 @@
 
   .confirmation-dialogue {
     animation: scaleIn 0.3s ease-out forwards;
-    /* Rest of your .confirmation-dialogue styles */
+  }
+
+  .text-with-icon {
+    display: flex;
+    align-items: center; /* This ensures the icon and text are aligned at their centers */
+    gap: 0.5rem; /* Optional: adds some space between the icon and the text */
   }
 </style>
