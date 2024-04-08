@@ -7,6 +7,11 @@
 
   import Empty from '#modules/_Empty.svelte' // for testing
   import AddToHomeScreen from '#modules/AddToHomeScreen.svelte'
+  import Contact from '#modules/Contact.svelte'
+  import MailingAddress from '#modules/MailingAddress.svelte'
+  import PhysicalAddress from '#modules/PhysicalAddress.svelte'
+  import Prefs from '#modules/Prefs.svelte'
+  import Donate from '#modules/Donate.svelte'
   import Home from '#modules/Home.svelte'
   import TxStart from '#modules/TxStart.svelte'
   import Tx from '#modules/Tx.svelte'
@@ -47,6 +52,11 @@
     route('/empty', Empty, true, null, LayoutIntro), // for testing
     route('/', AddToHomeScreen, u.addableToHome, '/sign-in', LayoutIntro),
     route('/sign-in', SignIn, needSignin, '/link-account', LayoutIntro),
+    route('/contact', Contact, true, null, LayoutIntro),
+    route('/mailing-address', MailingAddress, true, null, LayoutIntro),
+      route('/physical-address', PhysicalAddress, true, null, LayoutIntro),
+    route('/prefs', Prefs, true, null, LayoutIntro),
+    route('/donate', Donate , true, null, LayoutIntro),
     route('/link-account', LinkAccount, needLink, '/home', LayoutIntro),
     route('/home', Home, st.linked, '/'),
     route('/scan', Scan, st.linked, '/'),

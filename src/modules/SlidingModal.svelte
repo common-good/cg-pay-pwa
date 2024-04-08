@@ -1,5 +1,6 @@
 <script>
     import { slide } from 'svelte/transition';
+
     export let showModal = false; // Prop to control visibility
     function toggleModal() {
         showModal = !showModal;
