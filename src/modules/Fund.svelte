@@ -3,8 +3,8 @@
     import st from'#store.js'
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
     import checkHint from '#modules/assets/check-hint.png'
-    import StepsLeft from './StepsLeft.svelte';
     import Accordion from './Accordion.svelte'
+    import StepsLeft from './StepsLeft.svelte';
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
@@ -82,7 +82,6 @@
 
     const handleFundSubmit = () => {
         // Handle form submission logic here
-        // console.log({routingNumber, bankAccount, refills, targetBalance, minTransfer, saveWeekly});
         u.go('ssn');
     };
 
@@ -201,9 +200,7 @@
       &.signup
         margin-bottom $s1
 
-    .btn
-      height 100px
-      width 100px
+
 
     button
         cgButton()
@@ -236,6 +233,11 @@
       padding: $s1;
       position: relative; /* Make this a positioning context for the button */
       justify-content: space-between; /* Positions children at start and end of container */
+    }
+
+    .btn {
+      height 100px;
+      width 100px;
     }
 
     .btn.top-left {

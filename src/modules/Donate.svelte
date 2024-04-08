@@ -1,8 +1,12 @@
 <script>
   import { onMount } from 'svelte';
   import u from '#utils.js'; // Utility functions for API calls and validations
+  import StepsLeft from './StepsLeft.svelte';
+
+  import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import constants from "#constants.js";
+  import SlidingModal from "#modules/SlidingModal.svelte";
 
   let donation = {
     giftLevel: '',
@@ -18,6 +22,13 @@
   let replaces = ''; // TODO
   let amountTip = isCompany ? '' : 'The most common amounts chosen are $50 and $25.';
   let special = ''; // TODO
+
+  let showModal = true; // This variable controls the visibility of the modal
+
+  // This function toggles the visibility state of the modal
+  function toggleModal() {
+      showModal = !showModal;
+  }
 
   const GIFT_LEVELS = [
       { value: 2500, label: 'Slate .... $2,500'},
@@ -66,6 +77,11 @@
 </svelte:head>
 
 <section class="page card" id="donate">
+    <StepsLeft remaining={1} />
+    <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
+        <BackIcon width={'100%'} height={'100%'} />
+    </button>
+
   <header>
     <img src= { cgLogo } alt='Common Good Logo' />
     <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
@@ -74,10 +90,21 @@
   <div class='content'>
     <h2>Make a Donation</h2>
     <form on:submit|preventDefault={submitDonation}>
-        <p style="font-size: 12px">Hello, %name. Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>
-        <p style="font-size: 12px">Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>
-        {special}
-        <p style="font-size: 12px">To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>
+        <SlidingModal bind:showModal>
+            <p>Hello, %name. Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>
+            <br/>
+
+            <p>Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>
+            {special}
+            <p>To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">            <br/>
+            NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>
+
+        </SlidingModal>
+
+<!--        <p style="font-size: 12px">Hello, %name. Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>-->
+<!--        <p style="font-size: 12px">Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>-->
+<!--        {special}-->
+<!--        <p style="font-size: 12px">To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>-->
 
         <a style="font-size: 12px" href="'/help/why-no-one-time-option">Why no option for a one-time donation?</a>
 
@@ -138,22 +165,38 @@
     margin-bottom $s0
 
   header
+    margin-top: 5rem;
     contentCentered()
-    margin-bottom $s5
+    margin-bottom 3rem;
 
   img
     width 75px
     margin 0 $s2 0 0
 
-  .card
-    height 100%
-    display flex
-    flex-direction column
-    align-items center
-    background $c-blue-light
-    box-shadow: 2px 2px 4px $c-gray-dark
-    border-radius: 2%
-    padding $s1
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $c-blue-light;
+    box-shadow: 2px 2px 4px $c-gray-dark;
+    border-radius: 2%;
+    padding: $s1;
+    position: relative; /* Make this a positioning context for the button */
+    justify-content: space-between; /* Positions children at start and end of container */
+  }
+
+  .btn {
+    height 100px;
+    width 100px;
+  }
+
+  .btn.top-left {
+    position: absolute;
+    top: 2px;
+    left: 0.5px;
+    transform: scale(0.58);
+  }
 
   .content
     width 100%

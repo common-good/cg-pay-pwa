@@ -2,6 +2,10 @@
   import {onMount} from 'svelte';
   import u from '#utils.js'; // Assuming utility functions for frontend operations are available
   import constants from "#constants.js";
+  import StepsLeft from './StepsLeft.svelte';
+  import Accordion from "./Accordion.svelte";
+
+  import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import SlidingModal from "#modules/SlidingModal.svelte";
 
@@ -52,6 +56,11 @@
 </svelte:head>
 
 <section class="page card" id="preferences">
+  <StepsLeft remaining={1} />
+  <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
+    <BackIcon width={'100%'} height={'100%'} />
+  </button>
+
   <header>
     <img src= { cgLogo } alt='Common Good Logo' />
     <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
@@ -70,60 +79,57 @@
 
     <form on:submit|preventDefault={updatePreferences}>
       {#if !preferences.isCompany}
-        <div class="input-container">
-          <label>
-            <input type="checkbox" bind:checked={preferences.roundup}>
-            Round Up!
-          </label>
-          <p style="color:gray;font-size:10px">Round all your payments up to a whole dollar amount and donate the cents toward building the {constants.PROJECT} Economy in your area.</p>
-        </div>
+        <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.roundup}>
+              Round Up!</span>
+          <div slot="details">
+            <p style="color:gray;font-size:12px">Round all your payments up to a whole dollar amount and donate the cents toward building the {constants.PROJECT} Economy in your area.</p>
+          </div>
+        </Accordion>
 
-        <div class="input-container">
-          <label>
-            <input type="checkbox" bind:checked={preferences.foodAssistance}>
-            Food Assistance?
-          </label>
-          <p style="color:gray;font-size:10px">If you struggle to afford healthy food, consider answering "Yes" here. This is a request for financial assistance from other {constants.PROJECT} members in your community. Your answer is private &mdash; only program administrators can tell who is receiving this assistance. Typically answer "Yes" if you are eligible for any of the following (whether or not you have actually applied): {list}. (Food assistance may not yet be available in your area.)</p>
-        </div>
+        <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.foodAssistance}>
+            Food Assistance?</span>
+          <div slot="details">
+            <p style="color:gray;font-size:12px">If you struggle to afford healthy food, consider answering "Yes" here. This is a request for financial assistance from other {constants.PROJECT} members in your community. Your answer is private &mdash; only program administrators can tell who is receiving this assistance. Typically answer "Yes" if you are eligible for any of the following (whether or not you have actually applied): {list}. (Food assistance may not yet be available in your area.)</p>
+          </div>
+        </Accordion>
       {/if}
 
-      {#if showAdvancedOptions}
-        <div class="input-container">
-          <label>
-            <input type="checkbox" bind:checked={preferences.debtOk} on:change={function (){preferences.debtOk=false;}}>
-            Debt Okay?
-          </label>
-          <p style="color:gray;font-size:10px">Use your {constants.PROJECT} card as a <i>credit</i> card, allowing your account balance to go negative, limited by your credit limit (currently {constants.CREDITLIMIT}), based on your average monthly account activity. When you use your credit line  (that is, when your balance goes negative) it is a short-term loan from your {constants.PROJECT} community. <span class="loud">In choosing this option, you agree to bring your balance back up above zero within 30 days.</span></p>
-<!--          TODO: Make this optional-->
-          <p style="color:gray;font-size:10px"><b style="color:maroon">NOTE:</b> This setting is disabled unless you <a href="/settings/fund">choose automatic refills from a bank account</a>, with a target balance.</p>
+      <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.statements}>
+          Electronic Statements?</span>
+        <div slot="details">
+          <p style="color:gray;font-size:12px">If you do not select this, you agree to pay ${constants.R_STATEMENT_COST} per month to cover the postage and handling costs for this service.</p>
         </div>
-      {/if}
-
-      <div class="input-container">
-        <label>
-          <input type="checkbox" bind:checked={preferences.statements}>
-          Electronic Statements?
-        </label>
-        <p style="color:gray;font-size:10px">If you do not select this, you agree to pay ${constants.R_STATEMENT_COST} per month to cover the postage and handling costs for this service.</p>
-      </div>
-
+      </Accordion>
 
       {#if showAdvancedOptions}
-        <div class="input-container">
-          <label>
-            <input type="checkbox" bind:checked={preferences.secretBal}>
-            Secret Balance
-          </label>
-          <p style="color:gray;font-size:10px">Don't let merchants see my balance, even if I ask.</p>
-        </div>
+        <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.debtOk} on:change={function (){preferences.debtOk=false;}}>
+            Debt Okay?</span>
+          <div slot="details">
+            <p style="color:gray;font-size:12px">Use your {constants.PROJECT} card as a <i>credit</i> card, allowing your account balance to go negative, limited by your credit limit (currently {constants.CREDITLIMIT}), based on your average monthly account activity. When you use your credit line  (that is, when your balance goes negative) it is a short-term loan from your {constants.PROJECT} community. <span class="loud">In choosing this option, you agree to bring your balance back up above zero within 30 days.</span></p>
+            <p style="color:gray;font-size:12px"><b style="color:maroon">NOTE:</b> This setting is disabled unless you <a href="/settings/fund">choose automatic refills from a bank account</a>, with a target balance.</p>
 
-        <div class="input-container">
-          <label>
-            <input type="checkbox" bind:checked={preferences.noSearch}>
-            No Search
-          </label>
-          <p style="color:gray;font-size:10px">Let members identify my account only by phone, email, or account ID &mdash; not by name.</p>
-        </div>
+          </div>
+        </Accordion>
+
+        <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.secretBal}>
+            Secret Balance</span>
+          <div slot="details">
+            <p style="color:gray;font-size:12px">Don't let merchants see my balance, even if I ask.</p>
+          </div>
+        </Accordion>
+
+        <Accordion>
+          <span slot="head"><input type="checkbox" bind:checked={preferences.noSearch}>
+            No Search</span>
+          <div slot="details">
+            <p style="color:gray;font-size:12px">Let members identify my account only by phone, email, or account ID &mdash; not by name.</p>
+          </div>
+        </Accordion>
       {/if}
 
 
@@ -162,22 +168,39 @@
     margin-bottom $s0
 
   header
+    margin-top: 5rem;
     contentCentered()
-    margin-bottom $s5
+    margin-bottom 3rem;
+
 
   img
     width 75px
     margin 0 $s2 0 0
 
-  .card
-    height 100%
-    display flex
-    flex-direction column
-    align-items center
-    background $c-blue-light
-    box-shadow: 2px 2px 4px $c-gray-dark
-    border-radius: 2%
-    padding $s1
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $c-blue-light;
+    box-shadow: 2px 2px 4px $c-gray-dark;
+    border-radius: 2%;
+    padding: $s1;
+    position: relative; /* Make this a positioning context for the button */
+    justify-content: space-between; /* Positions children at start and end of container */
+  }
+
+  .btn {
+    height 100px;
+    width 100px;
+  }
+
+  .btn.top-left {
+    position: absolute;
+    top: 2px;
+    left: 0.5px;
+    transform: scale(0.58);
+  }
 
   .content
     width 100%

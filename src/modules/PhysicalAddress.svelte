@@ -2,6 +2,9 @@
   import st from'#store.js'
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
+  import StepsLeft from "#modules/StepsLeft.svelte";
+
+  import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
 
   let physicalAddress = {
     streetAddress: '',
@@ -16,7 +19,7 @@
   let statusMsg = '';
 
   async function submitPhysicalAddress() {
-  //   TODO
+    u.go('prefs');
   }
 </script>
 
@@ -25,6 +28,11 @@
 </svelte:head>
 
 <section class="page card" id="contact-info">
+  <StepsLeft remaining={1} />
+  <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
+    <BackIcon width={'100%'} height={'100%'} />
+  </button>
+
   <header>
     <img src= { cgLogo } alt='Common Good Logo' />
     <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
@@ -117,7 +125,7 @@
         <input type="number" id="years" name="years" placeholder="Years" bind:value={physicalAddress.howLongYears} required />
         <input type="number" id="months" name="months" placeholder="Months" bind:value={physicalAddress.howLongMonths} required />
       </fieldset>
-      <button type="submit" onclick="location.href='prefs'">Next</button>
+      <button type="submit">Next</button>
       <p class="status">{statusMsg}</p>
     </form>
   </div>
@@ -147,22 +155,38 @@
     margin-bottom $s0
 
   header
+    margin-top: 5rem;
     contentCentered()
-    margin-bottom $s5
+    margin-bottom 3rem;
 
   img
     width 75px
     margin 0 $s2 0 0
 
-  .card
-    height 100%
-    display flex
-    flex-direction column
-    align-items center
-    background $c-blue-light
-    box-shadow: 2px 2px 4px $c-gray-dark
-    border-radius: 2%
-    padding $s1
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $c-blue-light;
+    box-shadow: 2px 2px 4px $c-gray-dark;
+    border-radius: 2%;
+    padding: $s1;
+    position: relative; /* Make this a positioning context for the button */
+    justify-content: space-between; /* Positions children at start and end of container */
+  }
+
+  .btn {
+    height 100px;
+    width 100px;
+  }
+
+  .btn.top-left {
+    position: absolute;
+    top: 2px;
+    left: 0.5px;
+    transform: scale(0.58);
+  }
 
   .content
     width 100%
