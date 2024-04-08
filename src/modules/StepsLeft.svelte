@@ -3,7 +3,7 @@
 </script>
 
 <div class="remaining-forms">
-    Steps: {remaining}/9
+    {remaining} Steps Left
 </div>
 
 <style>

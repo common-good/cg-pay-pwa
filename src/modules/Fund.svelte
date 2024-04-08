@@ -4,12 +4,15 @@
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
     import checkHint from '#modules/assets/check-hint.png'
     import StepsLeft from './StepsLeft.svelte';
+    import Accordion from './Accordion.svelte'
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
     import SlidingModal from "#modules/SlidingModal.svelte";
+    import Switch from './Switch.svelte'
 
     let credentials = { routingNumber: '', bankAccount: '', refills: 'false'}
+
     let showHint = false; // Controls the visibility of the hint image
     let showDetails = false;
 
@@ -159,11 +162,21 @@
                 {/if}
             </div>
             <div>
-                <label for="refills">Refill your Common Good Account automatically?<span class="why-link" on:click={toggleDetails}>(Why should I enable this?)</span></label>
-                <select bind:value="{credentials.refills}" id="refills">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
+
+                <Accordion>
+                    <span slot="head">Refill your Common Good Account automatically?</span>
+                    <div slot="details">
+                        <p>
+                            Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.
+                        </p>
+                    </div>
+                </Accordion>
+
+                <Switch bind:value={credentials.refills} label="" design="multi" options={['false', 'true']} fontSize={13}/>
+<!--                <select bind:value="{credentials.refills}" id="refills">-->
+<!--                    <option value="true">Yes</option>-->
+<!--                    <option value="false">No</option>-->
+<!--                </select>-->
 
                 {#if showDetails}
                     <div class="details">
@@ -174,6 +187,7 @@
             <button data-testid="btn-connect" type="submit">Connect</button>
         </form>
     </div>
+
 </section>
 
 <style lang='stylus'>
