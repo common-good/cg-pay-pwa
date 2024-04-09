@@ -8,6 +8,7 @@
   import SlidingModal from "#modules/SlidingModal.svelte";
   import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
   import { fade } from 'svelte/transition';
+  import StepsLeft from "#modules/StepsLeft.svelte";
 
   let selectedPhoto;
   let cropper;
@@ -77,6 +78,7 @@
 </svelte:head>
 
 <section class="page card" id="photo-upload-module">
+    <StepsLeft remaining={6} />
     <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
         <BackIcon width={'100%'} height={'100%'} />
     </button>

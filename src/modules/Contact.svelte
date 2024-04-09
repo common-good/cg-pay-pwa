@@ -45,7 +45,7 @@
 </svelte:head>
 
 <section class="page card" id="contact-info">
-  <StepsLeft remaining={1} />
+  <StepsLeft remaining={5} />
   <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
     <BackIcon width={'100%'} height={'100%'} />
   </button>

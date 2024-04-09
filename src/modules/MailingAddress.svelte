@@ -23,7 +23,7 @@
 </svelte:head>
 
 <section class="page card" id="mailing-address">
-  <StepsLeft remaining={1} />
+  <StepsLeft remaining={4} />
   <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
     <BackIcon width={'100%'} height={'100%'} />
   </button>
@@ -116,7 +116,7 @@
 
       </fieldset>
 
-      <button type="submit" onclick="location.href='physical-address'">Next</button>
+      <button type="submit" on:click={() => {u.go("physical-address")}}>Next</button>
       <p class="status">{statusMsg}</p>
     </form>
   </div>

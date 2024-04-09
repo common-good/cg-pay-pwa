@@ -5,6 +5,7 @@
   import u from '#utils.js'
   import c from '#constants.js'
 
+  import IdentityVerification from "#modules/IdentityVerification.svelte";
   import Empty from '#modules/_Empty.svelte' // for testing
   import AddToHomeScreen from '#modules/AddToHomeScreen.svelte'
   import Contact from '#modules/Contact.svelte'
@@ -28,6 +29,7 @@
   import ConfirmSSN from '#modules/ConfirmSSN.svelte'
   import ResetPassword from "#modules/ResetPassword.svelte"
   import PhotoID from "#modules/PhotoID.svelte"
+  import SignUpCountry from '#modules/SignUpCountry.svelte'
 
   st.fromTester().then() // we must check for tester instructions before doing anything
 
@@ -69,7 +71,9 @@
     route('/fund', Fund, true, '/sign-in', LayoutIntro),
     route('/ssn', ConfirmSSN, true, '/sign-in', LayoutIntro),
     route('/reset-password', ResetPassword, true, '/sign-in', LayoutIntro),
-    route('/photo', PhotoID, true, '/sign-in', LayoutIntro)
+    route('/photo', PhotoID, true, '/sign-in', LayoutIntro),
+    route('/sign-up-country', SignUpCountry, true, '/sign-in', LayoutIntro),
+    route('/verify-identity', IdentityVerification, true, '/sign-in', LayoutIntro),
   ]
 
   onMount(async () => {
