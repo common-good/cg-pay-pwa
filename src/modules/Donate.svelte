@@ -70,6 +70,11 @@
       statusMsg = 'Failed to load donation options.';
     }
   });
+
+  async function submitForm() {
+      //   TODO
+      u.go('fund');
+  }
 </script>
 
 <svelte:head>
@@ -138,8 +143,8 @@
         </div>
     </form>
   </div>
-<button type="submit" onclick="location.href='donate'">Next</button>
-<button type="button" onclick="location.href='donate'">Skip for now</button>
+<button type="submit" on:click={submitForm}>Next</button>
+<button type="button" on:click={submitForm}>Skip for now</button>
 </section>
 
 <style lang='stylus'>

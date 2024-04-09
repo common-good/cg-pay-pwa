@@ -61,6 +61,7 @@
       showConfirmationDialogue = false;
       // Code to handle the confirmed cropped image goes here
       // Proceed to the next step
+      u.go('contact');
   }
 
   // Function to handle "No" response in confirmation dialogue, allowing the user to recrop
