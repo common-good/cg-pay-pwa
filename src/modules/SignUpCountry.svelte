@@ -1,0 +1,261 @@
+<script>
+  import st from'#store.js'
+  import u from '#utils.js'
+  import cgLogo from '#modules/assets/cg-logo-300.png?webp'
+
+  let selectedCountry = 'US'; // To bind with select dropdown
+  let postalCode = '';
+  let referredBy = '';
+  let showReferHint = false;
+
+  // Function to display the refer hint
+  function handleReferFocus() {
+    showReferHint = true;
+    // showEamilHint = false; // Ensure the email hint is hidden
+  }
+
+  // Function to hide all hints when input is not focused
+    function handleBlur() {
+    showReferHint = false;
+    // showEmailHint = false;
+  }
+
+  // Function to dynamically load the reCAPTCHA API script
+  function loadRecaptchaScript() {
+    var script = document.createElement('script');
+    script.src = 'https://www.google.com/recaptcha/api.js';
+    script.async = true; // Load script asynchronously
+    script.defer = true; // Defer script execution until the HTML document has been parsed
+
+    // Append the script to the head of the document
+    document.head.appendChild(script);
+  }
+
+  // Call the function to load the script
+  loadRecaptchaScript();
+</script>
+
+  <svelte:head>
+    <title>CGPay - Sign Up</title>
+  </svelte:head>
+
+  <section class="page card" id="country-select">
+    <header>
+      <img src= { cgLogo } alt='Common Good Logo' />
+      <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
+    </header>
+
+    <div class='content'>
+      <h2>Sign Up</h2>
+      <form id='demo-form'>
+        <div class="dropdown-container"> 
+        <label for="country">Country: </label>
+        <select id="country" bind:value={selectedCountry}>
+          <option value="US">United States</option>
+          <option value="CA">Canada</option>
+        </select>
+        <label for="postal-code">Postal Code:</label>
+        </div>
+        <input 
+          data-testid="input-postal-code" 
+          id="postal-code" 
+          name="postalCode" 
+          type="text" 
+          placeholder="Physical location postal code" 
+          autocomplete="off" 
+          autocapitalize="off" 
+          bind:value={postalCode} 
+          required 
+        />
+
+        <label for="referred-by">Referred By:</label>
+        <div class="input-container">
+          <input 
+            data-testid="input-referred-by" 
+            id="referred-by" 
+            name="referredBy" 
+            type="text" 
+            placeholder="Where did you hear about Common Good?" 
+            autocomplete="off" 
+            autocapitalize="off" 
+            bind:value={referredBy} 
+            required 
+            on:focus={handleReferFocus}
+            on:blur={handleBlur}
+          />
+          {#if showReferHint}
+            <div class="floating-box">
+              Name of company or person, web address, publication name, radio station name, or whatever
+            </div>
+          {/if}
+        </div>
+
+      <!-- <button class="g-recaptcha" 
+        data-sitekey="6Lc3bLMpAAAAAFf9LbFHkx23HxPKURmm1gc828Jh" 
+        data-callback='onSubmit' 
+        data-action='submit'>Submit
+      </button> -->
+      <form action="?" method="POST">
+        <div class="g-recaptcha" data-sitekey="6Le5QrMpAAAAAJxr4dE-6Kph7rwvKS--nC4fn65q"></div>
+        <br/>
+        <input type="submit" value="Submit">
+      </form>
+
+        <small>By opening an account, you are joining a partnership to create a Common Good Economy based on the Common Good Agreement. Please actually read it, so you know what you're agreeing to. It's short.</small>
+        <button type="button" onclick="{() => u.go('next-page')}">I Agree</button>
+    </form>
+
+    </div>
+  </section>
+
+
+<style lang='stylus'>
+
+  .dropdown-container
+    margin-bottom: 10px; /* Adjust the value as needed */
+
+  /* If you want to add space using the select itself */
+  select
+    margin-bottom: 10px; /* Adjust the value as needed */
+
+  a
+    padding 0 $s-1
+    color $c-blue
+    text-decoration underline
+    text-underline-offset 1px
+    margin-bottom $s-2
+    width fit-content
+    &.signup
+      margin-bottom $s1
+
+  .btn
+    height 100px
+    width 100px
+
+  button
+      cgButton()
+      margin-bottom $s2
+
+  form
+      display flex
+      flex-direction column
+
+  h2
+      margin-bottom $s0
+
+  header
+      margin-top: 5rem;
+      contentCentered()
+      margin-bottom 3rem;
+
+  img
+      width 75px
+      margin 0 $s2 0 0
+
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $c-blue-light;
+    box-shadow: 2px 2px 4px $c-gray-dark;
+    border-radius: 2%;
+    padding: $s1;
+    position: relative; /* Make this a positioning context for the button */
+    justify-content: space-between; /* Positions children at start and end of container */
+  }
+
+  .btn.top-left {
+    position: absolute;
+    top: 2px;
+    left: 0.5px;
+    transform: scale(0.58);
+  }
+
+  .content
+      width 100%
+      height 100%
+      display flex
+      flex-direction column
+      align-items center
+
+  .status
+      height 24px
+      font-style italic
+      letter-spacing 0.0125rem
+      text-align center
+  
+  .left-align p {
+      margin-bottom: 1rem; /* Adds space between paragraphs */
+  }
+
+  button[data-testid="btn-connect"] {
+      margin-top: 20px;
+  }
+
+  .overlay {
+    position: fixed; /* Use fixed positioning to cover the whole screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex;
+    align-items: center; /* Center the image vertically */
+    justify-content: center; /* Center the image horizontally */
+    z-index: 1000; /* Ensure the overlay is above other content */
+  }
+
+  .hint-image {
+    max-width: 90%; /* Increase the max width to allow the image to be larger */
+    max-height: 90%; /* Increase the max height to allow the image to be larger */
+    margin: auto; /* Center the image */
+    object-fit: contain; /* This will ensure that the image's aspect ratio is preserved */
+  }
+
+  @media (min-width: 768px) {
+    .hint-image {
+      width: 80vw; /* Use viewport width for size */
+      height: 80vh; /* Use viewport height for size */
+      max-width: none; /* Remove max width limit */
+      max-height: none; /* Remove max height limit */
+    }
+  }
+
+  .show-note-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .why-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
+
+  .details {
+    margin-top: 10px;
+  }
+
+  .input-container {
+    position: relative; /* Establishes a positioning context */
+    display: inline-block; /* Or 'block', depending on your layout */
+    width: 100%; /* Ensures the container takes the full width */
+  }
+
+  .floating-box {
+    position: absolute;
+    top: 100%; /* Positions the box right below the input */
+    left: 0;
+    width: 100%; /* Makes the box as wide as the container/input */
+    background-color: #f9f9f9;
+    border: 1px solid #d3d3d3;
+    z-index: 100;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -16px; /* Adds a small space between the input and the box */
+  }
+</style>

@@ -4,39 +4,40 @@
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
 
 
-  let credentials = { fullName: '', email: '', phone: '', zip: '', country: '' }
+  let personalCredentials = { fullName: '', email: '', phone: ''}
+  let companyCredentials = { companyType: '', fullName: '', email: '', phone: ''}
   let statusMsg = ''
+  let accountType = 'personal'; // Default to personal account
 
   function showEr(msg) { u.alert(msg); statusMsg = '' }
 
-  async function signIn() {
-    statusMsg = 'Finding your account(s)...'
-    try {
-      const res = await u.postRequest('accounts', credentials)
-      st.setAcctChoices(res.accounts)
-      st.setCorrupt(null) // retry any failed (corrupt) transactions
-      if (res.accounts.length > 1) {
-        u.go('link-account')
-      } else {
-        // Skip /link-account and use individual account settings
-        st.setMe(res.accounts[0])
-        st.setShowDash(true)
-        st.setPayOk(true)
-        st.setAllowShow(true)
-        u.go('home')
-      }
-    } catch (er) {
-      st.resetNetwork()
-      if (u.isTimeout(er) || !$st.online) {
-        showEr('The server is unavailable. Check your internet connection and try again.')
-      } else if (er.message == 403) { // forbidden
-        showEr('That account is not completely set up. Sign back in at CommonGood.earth to complete it.')
-      } else {
-        console.log(er)
-        showEr('We could not find an account with that information. Please try again.')
-      }
-    }
+  const handleSubmit = () => {
+        // Handle form submission logic here
+        // console.log({routingNumber, bankAccount, refills, targetBalance, minTransfer, saveWeekly});
+        u.go('sign-up-country');
+    };
+  
+  // handle pop up hint
+  let showNameHint = false;
+  let showEmailHint = false;
+
+  // Function to display the name hint
+  function handleNameFocus() {
+    showNameHint = true;
+    showEamilHint = false; // Ensure the email hint is hidden
   }
+  // Function to display the email hint
+  function handleEmailFocus() {
+    showNameHint = false; // Ensure the name hint is hidden
+    showEmailHint = true; 
+  }
+
+  // Function to hide all hints when input is not focused
+  function handleBlur() {
+    showNameHint = false;
+    showEmailHint = false;
+  }
+
 </script>
 
 <svelte:head>
@@ -58,20 +59,100 @@
   <div class="left-align">
       Did you want to open a COMPANY account instead?
   </div>
-   
-    <form on:submit|preventDefault={signIn}>
-      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your Full Name" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
-      <small>Your full name, properly capitalized, as you would like it to appear to other members and member companies.</small>
-      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your phone number" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
-      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Email" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
-      <small>Type carefully. All emails from the system will be sent to this address. It will not be made public, but will be viewable by accounts you transact with (you can choose greater privacy by clicking "Advanced" on the Preferences Settings page).</small>
-      <label for="full-name">Postal Code: </label>
-      <input data-testid="input-identifier" name="account-id" type="text" placeholder="Physical location postal code" autocomplete="off" autocapitalize="off" bind:value={ credentials.identifier } required />
-      <button data-testid="btn-signin" type="submit">Sign Up</button>
+
+  <div class="account-type-selector">
+    <label>
+      <input type="radio" name="accountType" value="personal" bind:group={accountType} checked />
+      Personal Account
+    </label>
+    <label>
+      <input type="radio" name="accountType" value="company" bind:group={accountType} />
+      Company Account
+    </label>
+  </div>
+
+  {#if accountType == 'personal'}
+  <!-- Personal account form--> 
+    <form on:submit|preventDefault={handleSubmit}>
+      <div class="input-container">
+        <input data-testid="input-fullname" name="name" type="text" placeholder="Your Full Name" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.fullName} required on:focus={handleNameFocus} on:blur={handleBlur}/>
+        {#if showNameHint}
+          <div class="floating-box">
+            Your full name, properly capitalized, as you would like it to appear to other members and member companies.
+          </div>
+        {/if}
+      </div>
+      
+      <input data-testid="input-phone" name="phone" type="text" placeholder="Your phone number" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.phone} required />
+      
+      <div class="input-container">
+        <input data-testid="input-email" name="email" type="text" placeholder="Email" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.email} required on:focus={handleEmailFocus} on:blur={handleBlur}/>
+        {#if showEmailHint}
+          <div class="floating-box">
+            Type carefully. All emails from the system will be sent to this address. It will not be made public, but will be viewable by accounts you transact with (you can choose greater privacy by clicking "Advanced" on the Preferences Settings page).
+          </div>
+        {/if}
+      </div>
+      <button data-testid="btn-signin" type="submit">Next</button>
     </form>
+  {:else}
+    <!-- Company account form -->
+    <form on:submit|preventDefault={handleSubmit}>
+      <!-- Company account form fields -->
+      <h3>Company Type</h3>
+        <label class='radio-label'>
+          <input type="radio" name="companyType" value="sole proprietor" bind:group={companyCredentials.companyType} checked />
+          Sole Proprietor
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="partnership" bind:group={companyCredentials.companyType} />
+          Partnership
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="LLC" bind:group={companyCredentials.companyType} />
+          LLC
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="private corporation" bind:group={companyCredentials.companyType} />
+          Private Corporation
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="publicly-traded corporation" bind:group={companyCredentials.companyType} />
+          Publicly-Traded Corporation
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="nonprofit" bind:group={companyCredentials.companyType} />
+          Nonprofit
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="government" bind:group={companyCredentials.companyType} />
+          Government
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="co-operative" bind:group={companyCredentials.companyType} />
+          Co-operative
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="unincorporated association or club" bind:group={companyCredentials.companyType} />
+          Unincorporated Association or Club
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="estate" bind:group={companyCredentials.companyType} />
+          Estate
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="trust" bind:group={companyCredentials.companyType} />
+          Trust
+        </label>
+        <label>
+          <input type="radio" name="companyType" value="custodian" bind:group={companyCredentials.companyType} />
+          Custodian
+        </label>
+
+    </form>
+  {/if}
   </div>
 </section>
-
 
 <style lang='stylus'>
   a
@@ -84,46 +165,157 @@
     &.signup
       margin-bottom $s1
 
+  .btn
+    height 100px
+    width 100px
+
   button
-    cgButton()
-    margin-bottom $s2
+      cgButton()
+      margin-bottom $s2
 
   form
-    display flex
-    flex-direction column
+      display flex
+      flex-direction column
 
   h2
-    margin-bottom $s0
+      margin-bottom $s0
 
   header
-    contentCentered()
-    margin-bottom $s5
+      margin-top: 5rem;
+      contentCentered()
+      margin-bottom 3rem;
 
   img
-    width 75px
-    margin 0 $s2 0 0
+      width 75px
+      margin 0 $s2 0 0
 
-  .card
-    height 100%
-    display flex
-    flex-direction column
-    align-items center
-    background $c-blue-light
-    box-shadow: 2px 2px 4px $c-gray-dark
-    border-radius: 2%
-    padding $s1
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $c-blue-light;
+    box-shadow: 2px 2px 4px $c-gray-dark;
+    border-radius: 2%;
+    padding: $s1;
+    position: relative; /* Make this a positioning context for the button */
+    justify-content: space-between; /* Positions children at start and end of container */
+  }
+
+  .btn.top-left {
+    position: absolute;
+    top: 2px;
+    left: 0.5px;
+    transform: scale(0.58);
+  }
 
   .content
-    width 100%
-    height 100%
-    display flex
-    flex-direction column
-    align-items center
+      width 100%
+      height 100%
+      display flex
+      flex-direction column
+      align-items center
 
   .status
-    height 24px
-    font-style italic
-    letter-spacing 0.0125rem
-    text-align center
+      height 24px
+      font-style italic
+      letter-spacing 0.0125rem
+      text-align center
+  
+  .left-align p {
+      margin-bottom: 1rem; /* Adds space between paragraphs */
+  }
 
+  button[data-testid="btn-connect"] {
+      margin-top: 20px;
+  }
+
+  .overlay {
+    position: fixed; /* Use fixed positioning to cover the whole screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex;
+    align-items: center; /* Center the image vertically */
+    justify-content: center; /* Center the image horizontally */
+    z-index: 1000; /* Ensure the overlay is above other content */
+  }
+
+  .hint-image {
+    max-width: 90%; /* Increase the max width to allow the image to be larger */
+    max-height: 90%; /* Increase the max height to allow the image to be larger */
+    margin: auto; /* Center the image */
+    object-fit: contain; /* This will ensure that the image's aspect ratio is preserved */
+  }
+
+  @media (min-width: 768px) {
+    .hint-image {
+      width: 80vw; /* Use viewport width for size */
+      height: 80vh; /* Use viewport height for size */
+      max-width: none; /* Remove max width limit */
+      max-height: none; /* Remove max height limit */
+    }
+  }
+
+  .show-note-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .why-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
+
+  .details {
+    margin-top: 10px;
+  }
+
+  .input-container {
+    position: relative; /* Establishes a positioning context */
+    display: inline-block; /* Or 'block', depending on your layout */
+    width: 100%; /* Ensures the container takes the full width */
+  }
+
+  .floating-box {
+    position: absolute;
+    top: 100%; /* Positions the box right below the input */
+    left: 0;
+    width: 100%; /* Makes the box as wide as the container/input */
+    background-color: #f9f9f9;
+    border: 1px solid #d3d3d3;
+    z-index: 100;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -16px; /* Adds a small space between the input and the box */
+  }
+
+  .radio-input {
+    display: none; /* Hide the default radio button */
+  }
+
+  /* Custom Radio Button Style */
+  .radio-label {
+    display: inline-block;
+    padding: 5px 20px;
+    margin: 5px;
+    background: #f0f0f0;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  /* Style for Checked State */
+  .radio-input:checked + .radio-label {
+    background: #6200ea;
+    color: white;
+    border-color: #6200ea;
+  }
 </style>
