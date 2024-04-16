@@ -5,13 +5,28 @@
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import StepsLeft from "#modules/StepsLeft.svelte";
 
-  let mailingAddress = {
-    streetAddress: '',
-    city: '',
-    state: '',
-    postalCode: '',
-  };
+  import { mailingAddress, physicalAddress } from '#store.js';
+  import { get } from 'svelte/store';
+
+  let isSameAsPhysical = false;
+
+  let mailValues = $mailingAddress;
+
+  // Only sync necessary fields
+  $: if (isSameAsPhysical) {
+    const physical = get(physicalAddress);
+    mailingAddress.set({
+      streetAddress: physical.streetAddress,
+      city: physical.city,
+      state: physical.state,
+      postalCode: physical.postalCode,
+      country: physical.country
+    });
+  }
+  $: mailValues = $mailingAddress;
+
   let statusMsg = '';
+
 
   async function submitMailingAddress() {
   //   TODO
@@ -37,16 +52,25 @@
     <h2>Mailing Address</h2>
 
     <form on:submit|preventDefault={submitMailingAddress}>
+      <div class="input-container">
+        <label>
+          <input type="checkbox" bind:checked={isSameAsPhysical} />
+          Mailing address is the same as physical address
+        </label>
+      </div>
       <fieldset>
         <div class="input-container">
-          <input type="text" id="street" placeholder="Street Address" bind:value={mailingAddress.streetAddress} required />
+          <input type="text" id="street" placeholder="Street Address" bind:value={mailValues.streetAddress} required />
         </div>
         <div class="input-container">
-          <input type="text" id="city" placeholder="City" bind:value={mailingAddress.city} required />
+          <input type="text" id="city" placeholder="City" bind:value={mailValues.city} required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="postal_code" placeholder="Postal Code" bind:value={mailValues.postalCode} required />
         </div>
 
-        <div class="input-container">
-          <select id="state" bind:value={mailingAddress.state}>
+        <div class="input-container" style="margin-bottom: 30px">
+          <select id="state" bind:value={mailValues.state}>
             <option value="" disabled>State</option>
             <option value="AL">Alabama</option>
             <option value="AK">Alaska</option>
@@ -103,20 +127,17 @@
 
         </div>
 
-        <div class="input-container">
-          <select id="country" style="margin-top: 10px" bind:value={mailingAddress.country} required>
-            <option value="" disabled>Country</option>
-            <option value="US">United States</option>
-          </select>
-        </div>
+<!--        <div class="input-container">-->
+<!--          <select id="country" style="margin-top: 10px" bind:value={mailValues.country} required>-->
+<!--            <option value="" disabled>Country</option>-->
+<!--            <option value="US">United States</option>-->
+<!--          </select>-->
+<!--        </div>-->
 
-        <div class="input-container" style="margin-top: 15px">
-          <input type="text" id="postal_code" placeholder="Postal Code" bind:value={mailingAddress.postalCode} required />
-        </div>
 
       </fieldset>
 
-      <button type="submit" on:click={() => {u.go("physical-address")}}>Next</button>
+      <button type="submit" on:click={() => {u.go("prefs")}}>Next</button>
       <p class="status">{statusMsg}</p>
     </form>
   </div>

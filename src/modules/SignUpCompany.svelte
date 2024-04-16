@@ -2,13 +2,23 @@
     import u from "#utils.js";
     import st from'#store.js'
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
+    import checkHint from '#modules/assets/check-hint.png'
+    import Accordion from './Accordion.svelte'
     import StepsLeft from './StepsLeft.svelte';
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
     import SlidingModal from "#modules/SlidingModal.svelte";
+    import Switch from './Switch.svelte'
 
-    let credentials = { legalName: '', ssn: '', birthday: ''}
+    let credentials = { routingNumber: '', bankAccount: '', refills: 'false'}
+
+    let selected = 'foo';
+    let options = [
+        'foo',
+        'bar',
+        'baz'
+    ]
 
     let showHint = false; // Controls the visibility of the hint image
     let showDetails = false;
@@ -45,49 +55,20 @@
         showDetails = !showDetails;
     }
 
-    function handleDateChange(event) {
-        credentials.birthday = event.target.value;
-    }
 
-    async function signIn() {
-        statusMsg = 'Finding your account(s)...'
-        try {
-            // replace with FUND url
-            const res = await u.postRequest('fund', credentials)
-            st.setAcctChoices(res.accounts)
-            st.setCorrupt(null) // retry any failed (corrupt) transactions
-            if (res.accounts.length > 1) {
-                u.go('link-account')
-            } else {
-                // Skip /link-account and use individual account settings
-                st.setMe(res.accounts[0])
-                st.setShowDash(true)
-                st.setPayOk(true)
-                st.setAllowShow(true)
-                u.go('home')
-            }
-        } catch (er) {
-            st.resetNetwork()
-            if (u.isTimeout(er) || !$st.online) {
-                showEr('The server is unavailable. Check your internet connection and try again.')
-            } else if (er.message == 403) { // forbidden
-                showEr('That account is not completely set up. Sign back in at CommonGood.earth to complete it.')
-            } else {
-                console.log(er)
-                // consider better error handling strat here
-                showEr(er)
-            }
-        }
-    }
-
-    const handleFormSubmit = () => {
+    const handleFundSubmit = () => {
         // Handle form submission logic here
-        u.go('photo');
+        u.go('ssn');
     };
 
     function setCustomMessage(event) {
         // Check which input field triggered the event and set a custom message accordingly
-        event.target.setCustomValidity('Please enter your SSN  using numbers only');
+        if (event.target.name === 'routing-id') {
+            event.target.setCustomValidity('Please enter your routing number using numbers only');
+        } else if (event.target.name === 'account-id') {
+            event.target.setCustomValidity('Please enter your bank account number using numbers only');
+        }
+
         // Reset the custom validation message after the input changes, to ensure it's re-evaluated
         event.target.oninput = () => event.target.setCustomValidity('');
     }
@@ -107,7 +88,7 @@
 </svelte:head>
 
 <section class="page card" id="fund">
-    <StepsLeft remaining={7} />
+    <StepsLeft remaining={1} />
     <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
         <BackIcon width={'100%'} height={'100%'} />
     </button>
@@ -119,9 +100,13 @@
     </header>
 
     <div class='content'>
+        <select bind:value={selected}>
+            {#each options as value}<option {value}>{value}</option>{/each}
+        </select>
+
         <h2>
             <div class="text-with-icon">
-                <span>Identity Verification</span>
+                <span>Connect a Checking Account</span>
                 <span class="show-note-link" on:click="{toggleModal}">
                   <HelpBoxIcon />
                 </span>
@@ -132,25 +117,51 @@
         </div>
 
         <SlidingModal bind:showModal>
-            <p>As a registered Money Services Business, we are required by law to verify your identity. Fortunately, we have top notch security.</p>
+            <p>You will need a way to get funds in and/or out of your Common Good account, so you will probably want to connect a bank account.<br><br>
+                <b>NOTE:</b> Funds are transferred only at your explicit request or when you approve an invoice, overspend your Common Good balance, or choose automatic refills. See our
+                <a href="https://CommonGood.earth/about-us/privacy-and-security?region=NEW" tabindex="-1" target="_blank" rel="noreferrer noopener">Privacy and Security Policy</a> for how your information is protected.</p>
         </SlidingModal>
 
-        <form on:submit|preventDefault={handleFormSubmit}>
+        <form on:submit|preventDefault={handleFundSubmit}>
             <div class="input-container">
-                <input data-testid="input-identifier" name="routing-id" type="text" placeholder="Your Legal Name" autocomplete="off" autocapitalize="off" bind:value={credentials.legalName} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="routing-id" type="text" placeholder="Routing" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.routingNumber} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
                 {#if showRoutingHint}
                     <div class="floating-box">
-                        If your legal name is different (or longer), correct it here.
+                        Type carefully your bank's routing number (check to be sure it's correct!).
                     </div>
                 {/if}
             </div>
 
             <div class="input-container">
-                <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your SSN" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.ssn} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="account-id" type="text" placeholder="Account" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.bankAccount} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                {#if showAccountHint}
+                    <div class="floating-box">
+                        Type carefully your account number.
+                    </div>
+                {/if}
             </div>
             <div>
-                <p>Select Your Birthday using the Date Picker</p>
-                <input type="date" placeholder="Your SSN" bind:value={credentials.birthday} on:change={handleDateChange} required>
+
+                <Accordion>
+                    <span slot="head">Refill your Common Good Account automatically?</span>
+                    <div slot="details">
+                        <p>
+                            Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.
+                        </p>
+                    </div>
+                </Accordion>
+
+                <Switch bind:value={credentials.refills} label="" design="multi" options={['false', 'true']} fontSize={13}/>
+                <!--                <select bind:value="{credentials.refills}" id="refills">-->
+                <!--                    <option value="true">Yes</option>-->
+                <!--                    <option value="false">No</option>-->
+                <!--                </select>-->
+
+                {#if showDetails}
+                    <div class="details">
+                        <small><i>*Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.</i></small>
+                    </div>
+                {/if}
             </div>
             <button data-testid="btn-connect" type="submit">Connect</button>
         </form>
@@ -289,18 +300,19 @@
     width: 100%; /* Ensures the container takes the full width */
   }
 
-  .floating-box
-    position absolute
-    top 100% /* Positions the box right below the input */
-    left 0
-    width 100% /* Makes the box as wide as the container/input */
-    background-color #f9f9f9
-    border 1px solid #d3d3d3
-    z-index 100
-    padding 10px
-    border-radius 5px
-    box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
-    margin-top -16px /* Adds a small space between the input and the box */
+  .floating-box {
+    position: absolute;
+    top: 100%; /* Positions the box right below the input */
+    left: 0;
+    width: 100%; /* Makes the box as wide as the container/input */
+    background-color: #f9f9f9;
+    border: 1px solid #d3d3d3;
+    z-index: 100;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 2px; /* Adds a small space between the input and the box */
+  }
 
   .text-with-icon {
     display: flex;

@@ -82,6 +82,7 @@
 
     const handleFundSubmit = () => {
         // Handle form submission logic here
+        credentials.refills = credentials.refills === "Yes" ? "true" : "false";
         u.go('ssn');
     };
 
@@ -96,15 +97,6 @@
         // Reset the custom validation message after the input changes, to ensure it's re-evaluated
         event.target.oninput = () => event.target.setCustomValidity('');
     }
-    const toggleHint = () => {
-        event.stopPropagation(); // Prevent the click from being detected by clickOutside
-        showHint = !showHint;
-    };
-
-    const closeHint = () => {
-        showHint = false;
-    };
-
 </script>
 
 <svelte:head>
@@ -171,11 +163,7 @@
                     </div>
                 </Accordion>
 
-                <Switch bind:value={credentials.refills} label="" design="multi" options={['false', 'true']} fontSize={13}/>
-<!--                <select bind:value="{credentials.refills}" id="refills">-->
-<!--                    <option value="true">Yes</option>-->
-<!--                    <option value="false">No</option>-->
-<!--                </select>-->
+                <Switch bind:value={credentials.refills} label="" design="multi" options={['Yes', 'No']} fontSize={16}/>
 
                 {#if showDetails}
                     <div class="details">
@@ -320,19 +308,18 @@
       width: 100%; /* Ensures the container takes the full width */
     }
 
-    .floating-box {
-      position: absolute;
-      top: 100%; /* Positions the box right below the input */
-      left: 0;
-      width: 100%; /* Makes the box as wide as the container/input */
-      background-color: #f9f9f9;
-      border: 1px solid #d3d3d3;
-      z-index: 100;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-top: 2px; /* Adds a small space between the input and the box */
-    }
+    .floating-box
+        position absolute
+        top 100% /* Positions the box right below the input */
+        left 0
+        width 100% /* Makes the box as wide as the container/input */
+        background-color #f9f9f9
+        border 1px solid #d3d3d3
+        z-index 100
+        padding 10px
+        border-radius 5px
+        box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+        margin-top -16px /* Adds a small space between the input and the box */
 
     .text-with-icon {
       display: flex;

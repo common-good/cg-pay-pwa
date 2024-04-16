@@ -5,21 +5,29 @@
   import StepsLeft from "#modules/StepsLeft.svelte";
 
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+  import { physicalAddress } from '#store.js';
+  import Range from "./Range.svelte"
 
-  let physicalAddress = {
-    streetAddress: '',
-    city: '',
-    state: '',
-    country: '',
-    postalCode: '',
-    rentOrOwn: '',
-    howLongYears: '',
-    howLongMonths: '',
-  };
+  let value = 42;
+  let theme = "default";
+
+  let formValues = $physicalAddress;
+
+  // let physicalAddress = {
+  //   streetAddress: '',
+  //   city: '',
+  //   state: '',
+  //   country: '',
+  //   postalCode: '',
+  //   rentOrOwn: '',
+  //   howLongYears: '',
+  //   howLongMonths: '',
+  // };
   let statusMsg = '';
 
   async function submitPhysicalAddress() {
-    u.go('prefs');
+    physicalAddress.set(formValues);
+    u.go('mailing-address');
   }
 </script>
 
@@ -40,18 +48,22 @@
 
   <div class='content'>
     <h2>Physical Address</h2>
-
     <form on:submit|preventDefault={submitPhysicalAddress}>
       <fieldset>
         <div class="input-container">
-          <input type="text" id="street" placeholder="Street Address" bind:value={physicalAddress.streetAddress} required />
+          <input type="text" id="street" placeholder="Street Address" bind:value={formValues.streetAddress} required />
         </div>
         <div class="input-container">
-          <input type="text" id="city" placeholder="City" bind:value={physicalAddress.city} required />
+          <input type="text" id="city" placeholder="City" bind:value={formValues.city} required />
         </div>
 
         <div class="input-container">
-          <select id="state" bind:value={physicalAddress.state}>
+          <input type="text" id="postal_code" placeholder="Postal Code" bind:value={formValues.postalCode} required />
+        </div>
+
+        <div class="input-container">
+          <label>State</label>
+          <select id="state" bind:value={formValues.state}>
             <option value="" disabled>State</option>
             <option value="AL">Alabama</option>
             <option value="AK">Alaska</option>
@@ -107,25 +119,31 @@
           </select>
 
         </div>
-
-        <div class="input-container">
-          <select id="country" style="margin-top: 10px" bind:value={physicalAddress.country} required>
-            <option value="" disabled>Country</option>
-            <option value="US">United States</option>
-          </select>
-        </div>
-
-        <label>Rent or Own:</label>
-        <select id="country" bind:value={physicalAddress.rentOrOwn} required>
+        <label>Rent or Own</label>
+        <select id="country" bind:value={formValues.rentOrOwn} required>
           <option value="RENT">Rent</option>
           <option value="OWN">Own</option>
         </select>
 
-        <label for="howlong">How long have you been at your current address (roughly):</label>
-        <input type="number" id="years" name="years" placeholder="Years" bind:value={physicalAddress.howLongYears} required />
-        <input type="number" id="months" name="months" placeholder="Months" bind:value={physicalAddress.howLongMonths} required />
+
+        <p class="address-duration"><b>How long have you been at your current address (roughly):</b></p>
+        <div class:purple-theme={theme === "purple"}>
+          <p>{formValues.howLongYears} Years</p>
+          <Range bind:value={formValues.howLongYears} />
+        </div>
+        <span class="and-text"><b>and</b></span>
+        <div class:purple-theme={theme === "purple"}>
+          <p>{formValues.howLongMonths} Months</p>
+          <Range bind:value={formValues.howLongMonths}
+                 max={12} />
+        </div>
+
+<!--        <input type="number" id="years" name="years" placeholder="Years" bind:value={formValues.howLongYears} required />-->
+<!--        <input type="number" id="months" name="months" placeholder="Months" bind:value={formValues.howLongMonths} required />-->
       </fieldset>
-      <button type="submit">Next</button>
+      <div class="slider-container">
+        <button type="submit">Next</button>
+      </div>
       <p class="status">{statusMsg}</p>
     </form>
   </div>
@@ -205,5 +223,28 @@
     position relative /* Establishes a positioning context */
     display inline-block /* Or 'block', depending on your layout */
     width 100% /* Ensures the container takes the full width */
+
+  input[type="range"] {
+    width: 100%; /* Adjust based on your design */
+  }
+
+  output {
+    margin-left: 10px;
+  }
+
+  .address-duration {
+    margin-top: 20px
+    margin-bottom: 15px;
+  }
+
+  .slider-container {
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+
+  .and-text {
+    display: block;
+    text-align: center;
+  }
 
 </style>

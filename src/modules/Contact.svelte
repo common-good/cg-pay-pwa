@@ -36,7 +36,7 @@
 
   async function submitContactInfo() {
   //   TODO
-      u.go('mailing-address');
+      u.go('physical-address');
   }
 </script>
 

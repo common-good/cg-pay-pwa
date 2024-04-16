@@ -20,6 +20,7 @@
   import LinkAccount from '#modules/LinkAccount.svelte'
   import Scan from '#modules/Scan.svelte'
   import SignIn from '#modules/SignIn.svelte'
+  import SignUpCompany from '#modules/SignUpCompany.svelte'
   import Comment from '#modules/Comment.svelte'
   import Settings from '#modules/Settings.svelte'
   import LayoutIntro from '#modules/LayoutIntro.svelte'
@@ -30,6 +31,7 @@
   import ResetPassword from "#modules/ResetPassword.svelte"
   import PhotoID from "#modules/PhotoID.svelte"
   import SignUpCountry from '#modules/SignUpCountry.svelte'
+  import Agreement from "#modules/Agreement.svelte";
 
   st.fromTester().then() // we must check for tester instructions before doing anything
 
@@ -73,7 +75,9 @@
     route('/reset-password', ResetPassword, true, '/sign-in', LayoutIntro),
     route('/photo', PhotoID, true, '/sign-in', LayoutIntro),
     route('/sign-up-country', SignUpCountry, true, '/sign-in', LayoutIntro),
+    route('/sign-up-company', SignUpCompany, true, '/sign-in', LayoutIntro),
     route('/verify-identity', IdentityVerification, true, '/sign-in', LayoutIntro),
+    route('/agreement', Agreement, true, '/sign-in', LayoutIntro),
   ]
 
   onMount(async () => {

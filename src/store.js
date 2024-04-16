@@ -277,3 +277,23 @@ export const createStore = () => {
 }
 
 export default createStore()
+
+
+export const physicalAddress = writable({
+  streetAddress: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: 'US',
+  rentOrOwn: 'RENT',
+  howLongYears: '',
+  howLongMonths: '',
+});
+
+export const mailingAddress = writable({
+  streetAddress: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: 'US'
+});

@@ -96,7 +96,7 @@
     <h2>Make a Donation</h2>
     <form on:submit|preventDefault={submitDonation}>
         <SlidingModal bind:showModal>
-            <p>Hello, %name. Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>
+            <p>Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>
             <br/>
 
             <p>Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>
