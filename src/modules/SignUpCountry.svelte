@@ -82,30 +82,29 @@
         <label for="country">Country: </label>
         <select id="country" bind:value={selectedCountry}>
           <option value="US">United States</option>
-          <option value="CA">Canada</option>
         </select>
-        <label for="postal-code">Postal Code:</label>
         </div>
-        <input 
-          data-testid="input-postal-code" 
-          id="postal-code" 
-          name="postalCode" 
-          type="text" 
-          placeholder="Physical location postal code" 
-          autocomplete="off" 
-          autocapitalize="off" 
-          bind:value={postalCode} 
-          required 
-        />
+        <div class="input-container">
+          <input
+            data-testid="input-postal-code"
+            id="postal-code"
+            name="postalCode"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            bind:value={postalCode}
+            required
+          />
+          <span class="floating-label">Physical location postal code</span>
+        </div>
 
-        <label for="referred-by">Referred By:</label>
+        <label for="referred-by">Where did you hear about us? (optional)</label>
         <div class="input-container">
           <input 
             data-testid="input-referred-by" 
             id="referred-by" 
             name="referredBy" 
-            type="text" 
-            placeholder="Where did you hear about us?"
+            type="text"
             autocomplete="off" 
             autocapitalize="off" 
             bind:value={referredBy} 
@@ -113,6 +112,7 @@
             on:focus={handleReferFocus}
             on:blur={handleBlur}
           />
+          <span class="floating-label">Referred by</span>
           {#if showReferHint}
             <div class="floating-box">
               Name of company or person, web address, publication name, radio station name, or whatever
@@ -311,5 +311,27 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: -16px; /* Adds a small space between the input and the box */
+  }
+
+  input {
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    bottom: 0px;
+    font-size: 10px;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
   }
 </style>

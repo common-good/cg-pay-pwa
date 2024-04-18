@@ -51,20 +51,23 @@
     <form on:submit|preventDefault={submitPhysicalAddress}>
       <fieldset>
         <div class="input-container">
-          <input type="text" id="street" placeholder="Street Address" bind:value={formValues.streetAddress} required />
+          <input type="text" id="street" bind:value={formValues.streetAddress} required />
+          <span class="floating-label">Street Address</span>
         </div>
         <div class="input-container">
-          <input type="text" id="city" placeholder="City" bind:value={formValues.city} required />
+          <input type="text" id="city"bind:value={formValues.city} required />
+          <span class="floating-label">City</span>
         </div>
 
         <div class="input-container">
-          <input type="text" id="postal_code" placeholder="Postal Code" bind:value={formValues.postalCode} required />
+          <input type="text" id="postal_code" bind:value={formValues.postalCode} required />
+          <span class="floating-label">Postal Code</span>
         </div>
 
         <div class="input-container">
           <label>State</label>
           <select id="state" bind:value={formValues.state}>
-            <option value="" disabled>State</option>
+            <option value="" disabled>Select state</option>
             <option value="AL">Alabama</option>
             <option value="AK">Alaska</option>
             <option value="AZ">Arizona</option>
@@ -247,4 +250,25 @@
     text-align: center;
   }
 
+  input {
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    bottom: 0px;
+    font-size: 10px;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
+  }
 </style>

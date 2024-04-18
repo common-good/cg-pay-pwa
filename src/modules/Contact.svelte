@@ -61,7 +61,8 @@
     <h2>Contact Information</h2>
     <form on:submit|preventDefault={submitContactInfo}>
       <div class="input-container">
-        <input type="text" placeholder="Your Name" bind:value={contactInfo.yourName} on:focus={handleNameFocus} on:blur={handleBlur} required />
+        <input type="text" bind:value={contactInfo.yourName} on:focus={handleNameFocus} on:blur={handleBlur} required />
+        <span class="floating-label">Your Name</span>
         {#if showNameHint}
           <div class="floating-box">
             The <b>FULL NAME</b> you use most of the time, properly capitalized!
@@ -70,20 +71,23 @@
       </div>
 
       <div class="input-container">
-      <input type="email" placeholder="Email" bind:value={contactInfo.email}  required />
+        <input type="email" bind:value={contactInfo.email}  required />
+        <span class="floating-label">Email</span>
       </div>
 
       <div class="input-container">
-      <input type="password" placeholder="Password" bind:value={contactInfo.password}  on:focus={handlePasswordFocus} on:blur={handleBlur} required />
-      {#if showPasswordHint}
-        <div class="floating-box">
-          Required for changing email address
-        </div>
-      {/if}
+        <input type="password" bind:value={contactInfo.password}  on:focus={handlePasswordFocus} on:blur={handleBlur} required />
+        {#if showPasswordHint}
+          <div class="floating-box">
+            Required for changing email address
+          </div>
+        {/if}
+        <span class="floating-label">Password</span>
       </div>
 
       <div class="input-container">
-      <input type="tel" placeholder="Phone" bind:value={contactInfo.phone} required />
+        <input type="tel" bind:value={contactInfo.phone} required />
+        <span class="floating-label">Phone</span>
       </div>
 
       <div class="input-container">
@@ -181,5 +185,28 @@
     border-radius 5px
     box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
     margin-top -16px /* Adds a small space between the input and the box */
+
+
+  input {
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    bottom: 0px;
+    font-size: 10px;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
+  }
 
 </style>

@@ -84,7 +84,8 @@
   <!-- Personal account form-->
     <form on:submit|preventDefault={handleSubmit}>
       <div class="input-container">
-        <input data-testid="input-fullname" name="name" type="text" placeholder="Your Full Name" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.fullName} required on:focus={handleNameFocus} on:blur={handleBlur}/>
+        <input data-testid="input-fullname" name="name" type="text" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.fullName} required on:focus={handleNameFocus} on:blur={handleBlur}/>
+        <span class="floating-label">Your full name</span>
         {#if showNameHint}
           <div class="floating-box">
             Your full name, properly capitalized, as you would like it to appear to other members and member companies.
@@ -92,10 +93,14 @@
         {/if}
       </div>
 
-      <input data-testid="input-phone" name="phone" type="text" placeholder="Your phone number" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.phone} required />
+      <div class="input-container">
+        <input data-testid="input-phone" name="phone" type="text" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.phone} required />
+        <span class="floating-label">Your phone number</span>
+      </div>
 
       <div class="input-container">
-        <input data-testid="input-email" name="email" type="text" placeholder="Email" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.email} required on:focus={handleEmailFocus} on:blur={handleBlur}/>
+        <input data-testid="input-email" name="email" type="text" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.email} required on:focus={handleEmailFocus} on:blur={handleBlur}/>
+        <span class="floating-label">Email</span>
         {#if showEmailHint}
           <div class="floating-box">
             Type carefully. All emails from the system will be sent to this address. It will not be made public, but will be viewable by accounts you transact with (you can choose greater privacy by clicking "Advanced" on the Preferences Settings page).
@@ -327,4 +332,27 @@
     color: white;
     border-color: #6200ea;
   }
+
+  input {
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    bottom: 0px;
+    font-size: 10px;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
+  }
+
 </style>

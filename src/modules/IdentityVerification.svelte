@@ -137,7 +137,8 @@
 
         <form on:submit|preventDefault={handleFormSubmit}>
             <div class="input-container">
-                <input data-testid="input-identifier" name="routing-id" type="text" placeholder="Your Legal Name" autocomplete="off" autocapitalize="off" bind:value={credentials.legalName} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="routing-id" type="text" autocomplete="off" autocapitalize="off" bind:value={credentials.legalName} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
+                <span class="floating-label">Your Legal Name</span>
                 {#if showRoutingHint}
                     <div class="floating-box">
                         If your legal name is different (or longer), correct it here.
@@ -146,11 +147,12 @@
             </div>
 
             <div class="input-container">
-                <input data-testid="input-identifier" name="account-id" type="text" placeholder="Your SSN" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.ssn} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="account-id" type="text" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.ssn} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                <span class="floating-label">Your SSN</span>
             </div>
-            <div>
-                <p>Select Your Birthday using the Date Picker</p>
-                <input type="date" placeholder="Your SSN" bind:value={credentials.birthday} on:change={handleDateChange} required>
+            <div class="input-container">
+                <input type="date" bind:value={credentials.birthday} on:change={handleDateChange} required>
+                <span class="floating-label">Your Birthday</span>
             </div>
             <button data-testid="btn-connect" type="submit">Connect</button>
         </form>
@@ -307,4 +309,34 @@
     align-items: center; /* This ensures the icon and text are aligned at their centers */
     gap: 0.5rem; /* Optional: adds some space between the icon and the text */
   }
+
+  input {
+      padding-top: 1rem;
+      padding-bottom: 0.25rem;
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+      top: 0px;
+      left: 12px;
+      bottom: 0px;
+      font-size: 10px;
+  }
+
+  .floating-label {
+      position: absolute;
+      pointer-events: none;
+      left: 12px;
+      top: 12px;
+      color: gray;
+      transition: 0.2s ease all;
+  }
+
+  input[type="date"] ~ .floating-label {
+      top: 0px;
+      left: 12px;
+      bottom: 0px;
+      font-size: 10px;
+  }
+
 </style>
