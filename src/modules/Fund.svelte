@@ -163,7 +163,7 @@
                     </div>
                 </Accordion>
 
-                <Switch bind:value={credentials.refills} label="" design="multi" options={['Yes', 'No']} fontSize={16}/>
+                <Switch bind:value={credentials.refills} label="" design="multi" options={['No', 'Yes']} fontSize={16}/>
 
                 {#if showDetails}
                     <div class="details">

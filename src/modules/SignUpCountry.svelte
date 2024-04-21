@@ -69,12 +69,7 @@
 
     <div class='content'>
       <h2>
-        <div class="text-with-icon">
-          <span>Sign Up</span>
-<!--          <span class="show-note-link" on:click="{toggleModal}">-->
-<!--                  <HelpBoxIcon />-->
-<!--                </span>-->
-        </div>
+          <span>Sign Up - Personal Account</span>
       </h2>
 
       <form id='demo-form' on:submit|preventDefault={handleFormSubmit}>
@@ -120,35 +115,12 @@
           {/if}
         </div>
 
-<!--      <button class="g-recaptcha"-->
-<!--        data-sitekey="6Lc3bLMpAAAAAFf9LbFHkx23HxPKURmm1gc828Jh"-->
-<!--        data-callback='onSubmit'-->
-<!--        data-action='submit'>Submit-->
-<!--      </button>-->
+
       <form action="?" method="POST">
         <div class="g-recaptcha" data-sitekey="6Le5QrMpAAAAAJxr4dE-6Kph7rwvKS--nC4fn65q"></div>
         <br/>
-        <!--input type="submit" value="Submit"-->
       </form>
 
-<!--        <Accordion>-->
-<!--          <span slot="head">Read Common Good Agreement</span>-->
-<!--          <div slot="details">-->
-<!--            <li><b>Who.</b> I make this agreement with all Common Good <a href="https://new.commongood.earth/help/agreement#Members" tabindex="-1">Members</a> and <a href="https://new.commongood.earth/help/agreement#Member-Organizations" tabindex="-1">Member Organizations</a> everywhere — especially with Members and Member Organizations in my <a href="https://new.commongood.earth/help/agreement#CGC" tabindex="-1">Common Good Community</a>.</li>-->
-<!--            <li><b>Community control.</b> I understand we can use the Common Good System, as a democratic community, to reclaim control of our local economy for the common good. I am willing to participate with other Members to do that, and to support other communities to do the same.</li>-->
-<!--            <li><b>Investing together.</b> I understand whenever I put money in my Common Good account, there is more money in the <a href="https://new.commongood.earth/help/agreement#Dollar-Pool" tabindex="-1">Dollar Pool</a>, so my community has more money to invest while I use my Common Good credit for purchases.</li>-->
-<!--            <li><b>Backing together.</b> I understand my Common Good credit is <a href="https://new.commongood.earth/help/agreement#Backing" tabindex="-1">backed</a> 100% or more — partly by money in the Dollar Pool and partly by Members and Member Organizations.</li>-->
-<!--            <li><b>Accepting payments.</b> I will accept Common Good credit as payment, <a href="https://new.commongood.earth/help/agreement#Without-Limit" tabindex="-1">without limit or surcharge</a>.</li>-->
-<!--            <li><b>Account Balance.</b> If I spend more than the balance in my Common Good account, resulting in a negative balance, I will bring my balance up to zero or more within 30 days.</li>-->
-<!--            <li><b>Disputes.</b> When there is a dispute, I will follow the <a href="https://new.commongood.earth/help/agreement#Disputes" tabindex="-1">Common Good Dispute Resolution Process</a> and will honor its outcome.</li>-->
-<!--            <li><b>Changes.</b> I understand I will have the <a href="https://new.commongood.earth/help/agreement#Participation" tabindex="-1">opportunity to participate</a> in any decision to change this Agreement, and if I use my account after changes have been approved, that means I agree to those changes.</li>-->
-<!--          </div>-->
-<!--        </Accordion>-->
-
-<!--        <SlidingModal bind:showModal>-->
-<!--          <p>By opening an account, you are joining a partnership to create a Common Good Economy based on the Common Good Agreement.-->
-<!--            <strong><span style="color: red;">Please actually read it, so you know what you're agreeing to. It's short.</span></strong></p>-->
-<!--        </SlidingModal>-->
 
         <button type="submit">Next</button>
     </form>

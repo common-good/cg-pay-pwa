@@ -1,86 +1,70 @@
 <script>
     import u from "#utils.js";
-    import st from'#store.js'
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
-    import checkHint from '#modules/assets/check-hint.png'
-    import Accordion from './Accordion.svelte'
     import StepsLeft from './StepsLeft.svelte';
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
-    import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
-    import SlidingModal from "#modules/SlidingModal.svelte";
     import Switch from './Switch.svelte'
+    import SelectableLabel from '#modules/SelectableLabel.svelte';
 
-    let credentials = { routingNumber: '', bankAccount: '', refills: 'false'}
+    let companyCredentials = { companyType: '', fullName: '', legalName:'', email: '',
+        postalCode: '', companyPhone: '', selling: '', federalID: '', sellCredit: 'Yes', foundedDate: ''}
 
-    let selected = 'foo';
-    let options = [
-        'foo',
-        'bar',
-        'baz'
-    ]
 
-    let showHint = false; // Controls the visibility of the hint image
-    let showDetails = false;
-
-    let showRoutingHint = false;
-    let showAccountHint = false;
+    let focusState = {
+        fullName: false,
+        legalName: false,
+        email: false,
+        postalCode: false,
+        companyPhone: false,
+        selling: false,
+        federalID: false,
+    };
 
     let showModal = true; // This variable controls the visibility of the modal
+
+
+    let items = [
+        {value:1, label: 'Sole Proprietor'},
+        {value:2, label: 'Partnership'},
+        {value:3, label: 'LLC'},
+        {value:4, label: 'Private Corporation'},
+        {value:5, label: 'Publicly-Traded Corporation'},
+        {value:6, label: 'Nonprofit'},
+        {value:7, label: 'Government'},
+        {value:8, label: 'Co-Operative'},
+        {value:9, label: 'Unincorporated Association or Club'},
+        {value:10, label: 'Estate'},
+        {value:11, label: 'Trust'},
+        {value:12, label: 'Custodian'},
+    ]
+
+
+
+
+    function handleFocus(fieldName) {
+        Object.keys(focusState).forEach(key => focusState[key] = false);
+        focusState[fieldName] = true;
+    }
+
+    function handleBlur(fieldName) {
+        focusState[fieldName] = false;
+    }
 
     // This function toggles the visibility state of the modal
     function toggleModal() {
         showModal = !showModal;
     }
 
-    // Function to display the routing number hint
-    function handleRoutingFocus() {
-        showRoutingHint = true;
-        showAccountHint = false; // Ensure the account hint is hidden
+
+    function handleDateChange(event) {
+        companyCredentials.foundedDate = event.target.value;
     }
 
-    // Function to display the account number hint
-    function handleAccountFocus() {
-        showAccountHint = true;
-        showRoutingHint = false; // Ensure the routing hint is hidden
-    }
-
-    // Function to hide all hints when input is not focused
-    function handleBlur() {
-        showRoutingHint = false;
-        showAccountHint = false;
-    }
-
-    function toggleDetails() {
-        showDetails = !showDetails;
-    }
-
-
-    const handleFundSubmit = () => {
-        // Handle form submission logic here
-        u.go('ssn');
+    const handleFormSubmit = () => {
+        companyCredentials.sellCredit = companyCredentials.sellCredit === "Yes" ? "true" : "false";
+        u.go('agreement');
     };
-
-    function setCustomMessage(event) {
-        // Check which input field triggered the event and set a custom message accordingly
-        if (event.target.name === 'routing-id') {
-            event.target.setCustomValidity('Please enter your routing number using numbers only');
-        } else if (event.target.name === 'account-id') {
-            event.target.setCustomValidity('Please enter your bank account number using numbers only');
-        }
-
-        // Reset the custom validation message after the input changes, to ensure it's re-evaluated
-        event.target.oninput = () => event.target.setCustomValidity('');
-    }
-    const toggleHint = () => {
-        event.stopPropagation(); // Prevent the click from being detected by clickOutside
-        showHint = !showHint;
-    };
-
-    const closeHint = () => {
-        showHint = false;
-    };
-
 </script>
 
 <svelte:head>
@@ -100,70 +84,140 @@
     </header>
 
     <div class='content'>
-        <select bind:value={selected}>
-            {#each options as value}<option {value}>{value}</option>{/each}
-        </select>
-
         <h2>
-            <div class="text-with-icon">
-                <span>Connect a Checking Account</span>
-                <span class="show-note-link" on:click="{toggleModal}">
-                  <HelpBoxIcon />
-                </span>
-            </div>
+            Company Sign Up
         </h2>
 
         <div class="left-align">
         </div>
 
-        <SlidingModal bind:showModal>
-            <p>You will need a way to get funds in and/or out of your Common Good account, so you will probably want to connect a bank account.<br><br>
-                <b>NOTE:</b> Funds are transferred only at your explicit request or when you approve an invoice, overspend your Common Good balance, or choose automatic refills. See our
-                <a href="https://CommonGood.earth/about-us/privacy-and-security?region=NEW" tabindex="-1" target="_blank" rel="noreferrer noopener">Privacy and Security Policy</a> for how your information is protected.</p>
-        </SlidingModal>
+        <div class="left-align" style="margin-bottom: 20px;">
+            <i><b>Need a personal account?<a class="signup inline-link" data-testid="lnk-signup-company" on:click={() => {u.go("sign-up")}}> Sign up for a personal account</a></b></i>
+        </div>
 
-        <form on:submit|preventDefault={handleFundSubmit}>
+        <form on:submit|preventDefault={handleFormSubmit}>
             <div class="input-container">
-                <input data-testid="input-identifier" name="routing-id" type="text" placeholder="Routing" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.routingNumber} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
-                {#if showRoutingHint}
-                    <div class="floating-box">
-                        Type carefully your bank's routing number (check to be sure it's correct!).
-                    </div>
+                <input type="text"
+                       placeholder="Company Name"
+                       autocomplete="off"
+                       bind:value={companyCredentials.fullName}
+                       required
+                       on:focus={() => handleFocus('fullName')}
+                       on:blur={() => handleBlur('fullName')}
+                />
+                {#if focusState.fullName}
+                    <div class="floating-box">The company's full name</div>
                 {/if}
             </div>
 
             <div class="input-container">
-                <input data-testid="input-identifier" name="account-id" type="text" placeholder="Account" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.bankAccount} required on:focus={handleAccountFocus} on:blur={handleBlur} />
-                {#if showAccountHint}
-                    <div class="floating-box">
-                        Type carefully your account number.
-                    </div>
+                <input type="text"
+                       placeholder="Legal Name"
+                       autocomplete="off"
+                       bind:value={companyCredentials.legalName}
+                       required
+                       on:focus={() => handleFocus('legalName')}
+                       on:blur={() => handleBlur('legalName')}
+                />
+                {#if focusState.legalName}
+                    <div class="floating-box">Company legal name</div>
                 {/if}
             </div>
-            <div>
 
-                <Accordion>
-                    <span slot="head">Refill your Common Good Account automatically?</span>
-                    <div slot="details">
-                        <p>
-                            Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.
-                        </p>
-                    </div>
-                </Accordion>
-
-                <Switch bind:value={credentials.refills} label="" design="multi" options={['false', 'true']} fontSize={13}/>
-                <!--                <select bind:value="{credentials.refills}" id="refills">-->
-                <!--                    <option value="true">Yes</option>-->
-                <!--                    <option value="false">No</option>-->
-                <!--                </select>-->
-
-                {#if showDetails}
-                    <div class="details">
-                        <small><i>*Consider enabling automatic refills for your Common Good Account to maintain your balance above a specified threshold. We kindly suggest opting out of this feature if you tend to bounce checks.</i></small>
-                    </div>
+            <div class="input-container">
+                <input type="text"
+                       placeholder="Email"
+                       autocomplete="off"
+                       bind:value={companyCredentials.email}
+                       required
+                       on:focus={() => handleFocus('email')}
+                       on:blur={() => handleBlur('email')}
+                />
+                {#if focusState.email}
+                    <div class="floating-box"><b>Type carefully!</b>
+                        All emails from the system will be sent to this address.
+                        It will not be made public, but will be viewable by accounts you transact with.</div>
                 {/if}
             </div>
-            <button data-testid="btn-connect" type="submit">Connect</button>
+
+            <div class="input-container">
+                <input type="text"
+                       placeholder="Postal Code"
+                       autocomplete="off"
+                       bind:value={companyCredentials.postalCode}
+                       required
+                       on:focus={() => handleFocus('postalCode')}
+                       on:blur={() => handleBlur('postalCode')}
+                />
+                {#if focusState.postalCode}
+                    <div class="floating-box">Physical location postal code</div>
+                {/if}
+            </div>
+
+            <div class="input-container">
+                <input type="text"
+                       placeholder="Company Phone"
+                       autocomplete="off"
+                       bind:value={companyCredentials.companyPhone}
+                       required
+                       on:focus={() => handleFocus('companyPhone')}
+                       on:blur={() => handleBlur('companyPhone')}
+                />
+                {#if focusState.companyPhone}
+                    <div class="floating-box">Company phone number</div>
+                {/if}
+            </div>
+
+            <div class="input-container">
+                <input type="text"
+                       placeholder="Selling"
+                       autocomplete="off"
+                       bind:value={companyCredentials.selling}
+                       required
+                       on:focus={() => handleFocus('selling')}
+                       on:blur={() => handleBlur('selling')}
+                />
+                {#if focusState.selling}
+                    <div class="floating-box">Enter a <b>VERY SHORT</b> transaction description (for example "food") for when you make a sale.
+                        This will appear in the description of the transaction for both you and the customer (for example "$20 for food on 04/21/2024")</div>
+                {/if}
+            </div>
+
+            <div class="input-container">
+                <input type="text"
+                       placeholder="Federal ID"
+                       autocomplete="off"
+                       pattern="\d*"
+                       bind:value={companyCredentials.federalID}
+                       required
+                       on:focus={() => handleFocus('federalID')}
+                       on:blur={() => handleBlur('federalID')}
+                />
+                {#if focusState.federalID}
+                    <div class="floating-box">Enter a <b>VERY SHORT</b> transaction description (for example "food") for when you make a sale.
+                        This will appear in the description of the transaction for both you and the customer (for example "$20 for food on 04/21/2024")</div>
+                {/if}
+            </div>
+
+            <div class="container">
+                <p>Please select your company's legal structure:</p>
+                <SelectableLabel placeholder="Account Type"
+                                 {items}
+                                 bind:selectedLabel={companyCredentials.companyType}
+                />
+            </div>
+
+            <div class="container">
+                <p>When did this company begin, approximately?</p>
+                <input type="date" bind:value={companyCredentials.foundedDate} on:change={handleDateChange} required>
+            </div>
+
+            <div class="container">
+                <p>Do you want to accept customer cash in exchange for your Common Good credit <span style="color: blue;">(recommended)</span>?</p>
+                <Switch bind:value={companyCredentials.sellCredit} label="" design="multi" options={['No', 'Yes']} fontSize={16}/>
+            </div>
+
+            <button data-testid="btn-connect" type="submit">Next</button>
         </form>
     </div>
 
@@ -248,75 +302,44 @@
     margin-top: 20px;
   }
 
-  .overlay {
-    position: fixed; /* Use fixed positioning to cover the whole screen */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    display: flex;
-    align-items: center; /* Center the image vertically */
-    justify-content: center; /* Center the image horizontally */
-    z-index: 1000; /* Ensure the overlay is above other content */
+  .container {
+    margin-bottom: 20px;
   }
-
-  .hint-image {
-    max-width: 90%; /* Increase the max width to allow the image to be larger */
-    max-height: 90%; /* Increase the max height to allow the image to be larger */
-    margin: auto; /* Center the image */
-    object-fit: contain; /* This will ensure that the image's aspect ratio is preserved */
+  .container p {
+    margin-bottom: 10px;
   }
-
-  @media (min-width: 768px) {
-    .hint-image {
-      width: 80vw; /* Use viewport width for size */
-      height: 80vh; /* Use viewport height for size */
-      max-width: none; /* Remove max width limit */
-      max-height: none; /* Remove max height limit */
-    }
+  .container input,
+  .container select,
+  .container .switch {
+    margin-bottom: 10px;
+    width: 100%;
   }
-
-  .show-note-link {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
+  .container .switch {
+    padding: 5px 0;
   }
-
-  .why-link {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
-    margin-left: 5px;
-  }
-
-  .details {
-    margin-top: 10px;
+  .container > *:last-child {
+    margin-bottom: 0;
   }
 
   .input-container {
-    position: relative; /* Establishes a positioning context */
-    display: inline-block; /* Or 'block', depending on your layout */
-    width: 100%; /* Ensures the container takes the full width */
+    position: relative;
+    display: inline-block;
+    width: 100%;
   }
 
-  .floating-box {
-    position: absolute;
-    top: 100%; /* Positions the box right below the input */
-    left: 0;
-    width: 100%; /* Makes the box as wide as the container/input */
-    background-color: #f9f9f9;
-    border: 1px solid #d3d3d3;
-    z-index: 100;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 2px; /* Adds a small space between the input and the box */
-  }
 
-  .text-with-icon {
-    display: flex;
-    align-items: center; /* This ensures the icon and text are aligned at their centers */
-    gap: 0.5rem; /* Optional: adds some space between the icon and the text */
-  }
+  .floating-box
+    position absolute
+    top 100%
+    left 0
+    width 100%
+    background-color #f9f9f9
+    border 1px solid #d3d3d3
+    z-index 100
+    padding 10px
+    border-radius 5px
+    box-shadow 0 2px 4px rgba(0, 0, 0, 0.1)
+    margin-top -16px
+
+
 </style>
