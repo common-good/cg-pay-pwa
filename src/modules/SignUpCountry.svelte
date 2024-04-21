@@ -24,32 +24,30 @@
   // Function to display the refer hint
   function handleReferFocus() {
     showReferHint = true;
-    // showEamilHint = false; // Ensure the email hint is hidden
   }
 
   // Function to hide all hints when input is not focused
     function handleBlur() {
     showReferHint = false;
-    // showEmailHint = false;
   }
 
-  // Function to dynamically load the reCAPTCHA API script
-  function loadRecaptchaScript() {
-    var script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js';
-    script.async = true; // Load script asynchronously
-    script.defer = true; // Defer script execution until the HTML document has been parsed
-
-    // Append the script to the head of the document
-    document.head.appendChild(script);
-  }
 
   function handleFormSubmit() {
+    recaptcha();
+    // need to send the token to backend for validation
+    // based on the response, then proceed
     u.go('agreement');
+    
   }
 
-  // Call the function to load the script
-  loadRecaptchaScript();
+  // ReCaptcha Enterprise v3 - no user interaction, generate token
+  function recaptcha() {
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute('6Lc2RMIpAAAAANFhDrbMZMWSE3um8swVgjtAnN22', {action: 'LOGIN'});
+      console.log("reCaptcha token value is:", token)
+    });
+  }
+
 </script>
 
   <svelte:head>
@@ -68,15 +66,16 @@
       </button>
       <img src="{cgLogo}" alt="Common Good Logo" style="margin-top: -50px">
       <h1 style="margin-top: -50px">CGPay{u.realData() ? '' : ' DEMO'}</h1>
+      <!--reCaptha Enterprise v3 without user interaction-->
+      <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc2RMIpAAAAANFhDrbMZMWSE3um8swVgjtAnN22"></script>
+      <!--reCaptha Enterprise v3 with checkbox-->
+      <!-- <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script> -->
     </header>
 
     <div class='content'>
       <h2>
         <div class="text-with-icon">
           <span>Sign Up</span>
-<!--          <span class="show-note-link" on:click="{toggleModal}">-->
-<!--                  <HelpBoxIcon />-->
-<!--                </span>-->
         </div>
       </h2>
 
@@ -112,7 +111,6 @@
             autocomplete="off" 
             autocapitalize="off" 
             bind:value={referredBy} 
-            required 
             on:focus={handleReferFocus}
             on:blur={handleBlur}
           />
@@ -123,38 +121,11 @@
             </div>
           {/if}
         </div>
-
-<!--      <button class="g-recaptcha"-->
-<!--        data-sitekey="6Lc3bLMpAAAAAFf9LbFHkx23HxPKURmm1gc828Jh"-->
-<!--        data-callback='onSubmit'-->
-<!--        data-action='submit'>Submit-->
-<!--      </button>-->
-      <form action="?" method="POST">
-        <div class="g-recaptcha" data-sitekey="6Le5QrMpAAAAAJxr4dE-6Kph7rwvKS--nC4fn65q"></div>
+        <!-- reCaptcha with user interaction -->
+        <!-- <div class="g-recaptcha" data-sitekey="6Ldh_sEpAAAAANP_H108K6HUWt7EbeiEfIAHVnFl" data-action="LOGIN"></div> -->
         <br/>
-        <!--input type="submit" value="Submit"-->
-      </form>
-
-<!--        <Accordion>-->
-<!--          <span slot="head">Read Common Good Agreement</span>-->
-<!--          <div slot="details">-->
-<!--            <li><b>Who.</b> I make this agreement with all Common Good <a href="https://new.commongood.earth/help/agreement#Members" tabindex="-1">Members</a> and <a href="https://new.commongood.earth/help/agreement#Member-Organizations" tabindex="-1">Member Organizations</a> everywhere — especially with Members and Member Organizations in my <a href="https://new.commongood.earth/help/agreement#CGC" tabindex="-1">Common Good Community</a>.</li>-->
-<!--            <li><b>Community control.</b> I understand we can use the Common Good System, as a democratic community, to reclaim control of our local economy for the common good. I am willing to participate with other Members to do that, and to support other communities to do the same.</li>-->
-<!--            <li><b>Investing together.</b> I understand whenever I put money in my Common Good account, there is more money in the <a href="https://new.commongood.earth/help/agreement#Dollar-Pool" tabindex="-1">Dollar Pool</a>, so my community has more money to invest while I use my Common Good credit for purchases.</li>-->
-<!--            <li><b>Backing together.</b> I understand my Common Good credit is <a href="https://new.commongood.earth/help/agreement#Backing" tabindex="-1">backed</a> 100% or more — partly by money in the Dollar Pool and partly by Members and Member Organizations.</li>-->
-<!--            <li><b>Accepting payments.</b> I will accept Common Good credit as payment, <a href="https://new.commongood.earth/help/agreement#Without-Limit" tabindex="-1">without limit or surcharge</a>.</li>-->
-<!--            <li><b>Account Balance.</b> If I spend more than the balance in my Common Good account, resulting in a negative balance, I will bring my balance up to zero or more within 30 days.</li>-->
-<!--            <li><b>Disputes.</b> When there is a dispute, I will follow the <a href="https://new.commongood.earth/help/agreement#Disputes" tabindex="-1">Common Good Dispute Resolution Process</a> and will honor its outcome.</li>-->
-<!--            <li><b>Changes.</b> I understand I will have the <a href="https://new.commongood.earth/help/agreement#Participation" tabindex="-1">opportunity to participate</a> in any decision to change this Agreement, and if I use my account after changes have been approved, that means I agree to those changes.</li>-->
-<!--          </div>-->
-<!--        </Accordion>-->
-
-<!--        <SlidingModal bind:showModal>-->
-<!--          <p>By opening an account, you are joining a partnership to create a Common Good Economy based on the Common Good Agreement.-->
-<!--            <strong><span style="color: red;">Please actually read it, so you know what you're agreeing to. It's short.</span></strong></p>-->
-<!--        </SlidingModal>-->
-
         <button type="submit">Next</button>
+        <!--reCaptha token is generated in const token, need to send to backend for verification-->
     </form>
 
     </div>
