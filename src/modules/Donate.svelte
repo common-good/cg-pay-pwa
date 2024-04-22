@@ -7,6 +7,7 @@
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import constants from "#constants.js";
   import SlidingModal from "#modules/SlidingModal.svelte";
+  import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
 
   let donation = {
     giftLevel: '',
@@ -25,10 +26,7 @@
 
   let showModal = true; // This variable controls the visibility of the modal
 
-  // This function toggles the visibility state of the modal
-  function toggleModal() {
-      showModal = !showModal;
-  }
+
 
   const GIFT_LEVELS = [
       { value: 2500, label: 'Slate .... $2,500'},
@@ -40,6 +38,45 @@
       { value: 25, label: 'Half Brick .. $25'},
       { value: -1, label: 'Water ... (other)'},
   ];
+
+
+  const contentMap = {
+      default: `<p>Thank you for considering partnering with us to create a Common Good Economy, by making a tax-deductible donation.</p>
+            <br/>
+
+            <p>Most members choose to donate: monthly, quarterly, or yearly. </p>
+            <p>To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">            <br/>
+            NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>`,
+      why: `<p>We are very grateful for any donation you choose to make.</p>
+  <p><b>99% member-supported.</b> So why don't we offer a one-time donation option during the sign-up process? We're in
+      a bit of a Catch-22. We are funded almost entirely by individual donations. Foundations typically do not
+      understand the importance of community-level <i>participatory</i> economic democracy. So our viability as an
+      organization depends on a reliable stream of donations from individuals and local businesses. Almost all such
+      donations come from our members.</p>
+  <p><b>Success threshold.</b> We were fortunate to receive some substantial initial donations to carry us through
+      several years. But we need to scale up to about 4,500 members in the next dozen months or so, to reach financial
+      sustainability.</p>
+  <p><b>The cost of asking.</b> Of course, if you make a one-time donation, we could call you in about a year, to ask
+      for another donation. But times have changed. People are overwhelmed with funding appeals, emails, and phone
+      calls. So fund appeals cost a huge amount of staff time. That feels wasteful to us and actually costs more than it
+      brings in. So, alas, with regret, we force you to make the choice far in advance — during the short time we have
+      your attention.</p>
+  <p><b>Your options.</b> Please do not let this keep you from signing up! <span class="loud">If you choose a recurring donation, you can change it (or end it) at any time</span> —
+      just sign in and click "Donate" at the bottom of any page. Or choose a zero donation now by selecting "Other" and
+      typing a "0" in the box.</p>
+  <p>As always, we welcome your comments and suggestions. If you can think of a better way to handle this, please let us
+      know. And thank you for participating in Common Good!</p>`,
+  }
+  ;
+
+  let modalContent = contentMap.default;
+
+  function toggleModal(key) {
+      modalContent = contentMap[key];
+      console.log(modalContent);
+      showModal = !showModal;
+  }
+
 
   const PERIODS = [
       'yearly',
@@ -97,25 +134,23 @@
     </header>
 
   <div class='content'>
-    <h2>Make a Donation</h2>
+      <h2>
+          <div class="text-with-icon">
+              <span>Make a Donation</span>
+              <span class="show-note-link" on:click={() => toggleModal('default')}>
+                  <HelpBoxIcon />
+                </span>
+          </div>
+
+      </h2>
+
+
     <form on:submit|preventDefault={submitDonation}>
         <SlidingModal bind:showModal>
-            <p>Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>
-            <br/>
-
-            <p>Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>
-            {special}
-            <p>To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">            <br/>
-            NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>
-
+            <div>{@html modalContent}</div>
         </SlidingModal>
 
-<!--        <p style="font-size: 12px">Hello, %name. Thank you for considering partnering with us to create a {constants.PROJECT} Economy, by making a tax-deductible donation.</p>-->
-<!--        <p style="font-size: 12px">Most members choose to donate{recurOnly}. {replaces} {amountTip}</p>-->
-<!--        {special}-->
-<!--        <p style="font-size: 12px">To donate an amount not listed (including ZERO), choose "Water" (and fill in the amount).</p><p><b class="loud">NOTE: This is a donation, not a deposit.</b> Thank you for your support!</p>-->
-
-        <a style="font-size: 12px" href="'/help/why-no-one-time-option">Why no option for a one-time donation?</a>
+        <p><span on:click={() => u.go("donation-why")} class="link">Why no option for a one-time donation?</span></p>
 
         <div class="input-container">
           <select bind:value={donation.giftLevel}>
@@ -256,5 +291,21 @@
       background-color: mediumblue; /* Color of the progress */
   }
 
+  .link {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 
+  .show-note-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .text-with-icon {
+    display: flex;
+    align-items: center; /* This ensures the icon and text are aligned at their centers */
+    gap: 0.5rem; /* Optional: adds some space between the icon and the text */
+  }
 </style>

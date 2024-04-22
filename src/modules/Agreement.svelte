@@ -4,11 +4,10 @@
 
     import Accordion from './Accordion.svelte'
     import SlidingModal from "#modules/SlidingModal.svelte";
-    import StepsLeft from "#modules/StepsLeft.svelte";
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
 
-    let showModal = false; // This variable controls the visibility of the modal
+    let showModal = true;
 
     const contentMap = {
         default: ` <p>By opening an account, you are joining a partnership to create a Common Good Economy based on the Common Good Agreement.
@@ -58,7 +57,7 @@
     <div class='content'>
         <h2>
             <div class="text-with-icon">
-                <span> Common Good Agreement</span>
+                <span>Common Good Agreement</span>
                 <span class="show-note-link" on:click={() => toggleModal('default')}>
                   <HelpBoxIcon />
                 </span>

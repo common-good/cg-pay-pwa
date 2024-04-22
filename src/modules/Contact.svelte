@@ -1,9 +1,6 @@
 <script>
-  import st from'#store.js'
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
-  import StepsLeft from './StepsLeft.svelte';
-
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
 
   let contactInfo = {
@@ -75,7 +72,7 @@
       </div>
 
       <div class="input-container">
-        <input type="email" bind:value={contactInfo.email}  required />
+        <input type="email" placeholder=" " bind:value={contactInfo.email} required />
         <span class="floating-label">Email</span>
       </div>
 
@@ -101,7 +98,6 @@
     </form>
   </div>
 </section>
-
 
 <style lang='stylus'>
   a
@@ -202,6 +198,14 @@
     left: 12px;
     bottom: 0px;
     font-size: 10px;
+  }
+
+  .input-container input[type="email"]:focus ~ .floating-label,
+  .input-container input[type="email"]:not(:placeholder-shown) ~ .floating-label {
+    top: 0px;
+    left: 12px;
+    font-size: 10px;
+    color: #333; /* Change color or any other property specifically for email inputs */
   }
 
   .floating-label {

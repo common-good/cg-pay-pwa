@@ -32,6 +32,7 @@
   import PhotoID from "#modules/PhotoID.svelte"
   import SignUpCountry from '#modules/SignUpCountry.svelte'
   import Agreement from "#modules/Agreement.svelte";
+  import DonationExplanation from "#modules/DonationExplanation.svelte";
 
   st.fromTester().then() // we must check for tester instructions before doing anything
 
@@ -78,6 +79,7 @@
     route('/sign-up-company', SignUpCompany, true, '/sign-in', LayoutIntro),
     route('/verify-identity', IdentityVerification, true, '/sign-in', LayoutIntro),
     route('/agreement', Agreement, true, '/sign-in', LayoutIntro),
+    route('/donation-why', DonationExplanation, true, '/sign-in', LayoutIntro),
   ]
 
   onMount(async () => {

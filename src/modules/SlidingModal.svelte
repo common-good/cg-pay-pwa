@@ -11,7 +11,6 @@
     <div class="backdrop" on:click={toggleModal}></div>
     <div class="modal" transition:slide={{ y: 300, duration: 300 }}>
         <div class="close-button" on:click={toggleModal}>X</div>
-
         <slot></slot> <!-- This is the placeholder for custom content -->
     </div>
 {/if}

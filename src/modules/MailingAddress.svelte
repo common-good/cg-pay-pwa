@@ -63,13 +63,17 @@
       </div>
       <fieldset>
         <div class="input-container">
-          <input type="text" id="street" placeholder="Street Address" bind:value={mailValues.streetAddress} required />
+          <input type="text" id="street" bind:value={mailValues.streetAddress} required />
+          <span class="floating-label">Street Address</span>
+
         </div>
         <div class="input-container">
-          <input type="text" id="city" placeholder="City" bind:value={mailValues.city} required />
+          <input type="text" id="city" bind:value={mailValues.city} required />
+          <span class="floating-label">City</span>
         </div>
         <div class="input-container">
-          <input type="text" id="postal_code" placeholder="Postal Code" bind:value={mailValues.postalCode} required />
+          <input type="text" id="postal_code" bind:value={mailValues.postalCode} required />
+          <span class="floating-label">Postal Code</span>
         </div>
 
         <div class="input-container" style="margin-bottom: 30px">
@@ -248,6 +252,23 @@
   .progress-bar {
     height: 100%;
     background-color: mediumblue; /* Color of the progress */
+  }
+
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    bottom: 0px;
+    font-size: 10px;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
   }
 
 </style>

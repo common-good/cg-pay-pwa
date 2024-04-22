@@ -40,6 +40,14 @@
     showEmailHint = false;
   }
 
+  let showConfirmationDialogue = true;
+
+  function handleDecision(decision) {
+    if (decision === 'yes') {
+      u.go('sign-up-company'); // Navigate to the agreement page
+    }
+    showConfirmationDialogue = false; // This will close the dialogue in either case
+  }
 </script>
 
 <svelte:head>
@@ -61,23 +69,16 @@
   </header>
 
   <div class='content'>
+    <h2>Sign Up - Personal Account</h2>
 
-    <h2>Sign Up </h2>
 
-  <div class="account-type-selector">
-    <label>
-      <input type="radio" name="accountType" value="personal" bind:group={accountType} checked />
-      Personal Account
-    </label>
-    <label>
-      <input type="radio" name="accountType" value="company" bind:group={accountType} />
-      Company Account
-    </label>
-  </div>
-
-  {#if accountType == 'personal'}
-  <!-- Personal account form-->
     <form on:submit|preventDefault={handleSubmit}>
+      <div class="left-align" style="margin-bottom: 10px;">
+        <i><b>Already have a Common Good account?<a class="signup inline-link" data-testid="lnk-signup" on:click={() => {u.go("sign-in")}} target="_blank">Sign In</a></b></i>
+      </div>
+      <div class="left-align" style="margin-bottom: 20px;">
+        <i><b>Need a company account?<a class="signup inline-link" data-testid="lnk-signup-company" on:click={() => {u.go("sign-up-company")}}> Sign up for a company account</a></b></i>
+      </div>
       <div class="input-container">
         <input data-testid="input-fullname" name="name" type="text" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.fullName} required on:focus={handleNameFocus} on:blur={handleBlur}/>
         <span class="floating-label">Your full name</span>
@@ -94,7 +95,7 @@
       </div>
 
       <div class="input-container">
-        <input data-testid="input-email" name="email" type="text" autocomplete="off" autocapitalize="off" bind:value={personalCredentials.email} required on:focus={handleEmailFocus} on:blur={handleBlur}/>
+        <input data-testid="input-email" name="email" type="email" placeholder=" " autocomplete="off" autocapitalize="off" bind:value={personalCredentials.email} required on:focus={handleEmailFocus} on:blur={handleBlur}/>
         <span class="floating-label">Email</span>
         {#if showEmailHint}
           <div class="floating-box">
@@ -104,68 +105,17 @@
       </div>
       <button data-testid="btn-signin" type="submit">Next</button>
     </form>
-  {:else}
-    <!-- Company account form -->
-    <form on:submit|preventDefault={handleSubmit}>
-      <!-- Company account form fields -->
-      <h3>Company Type</h3>
-        <label class='radio-label'>
-          <input type="radio" name="companyType" value="sole proprietor" bind:group={companyCredentials.companyType} checked />
-          Sole Proprietor
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="partnership" bind:group={companyCredentials.companyType} />
-          Partnership
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="LLC" bind:group={companyCredentials.companyType} />
-          LLC
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="private corporation" bind:group={companyCredentials.companyType} />
-          Private Corporation
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="publicly-traded corporation" bind:group={companyCredentials.companyType} />
-          Publicly-Traded Corporation
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="nonprofit" bind:group={companyCredentials.companyType} />
-          Nonprofit
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="government" bind:group={companyCredentials.companyType} />
-          Government
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="co-operative" bind:group={companyCredentials.companyType} />
-          Co-operative
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="unincorporated association or club" bind:group={companyCredentials.companyType} />
-          Unincorporated Association or Club
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="estate" bind:group={companyCredentials.companyType} />
-          Estate
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="trust" bind:group={companyCredentials.companyType} />
-          Trust
-        </label>
-        <label>
-          <input type="radio" name="companyType" value="custodian" bind:group={companyCredentials.companyType} />
-          Custodian
-        </label>
 
-    </form>
+  {#if showConfirmationDialogue}
+    <div class="overlay">
+      <div class="confirmation-dialogue">
+        <p><b>You are currently signing up for a <span style="color: red;">personal account</span>. Would you like to sign up for a <span style="color: red;">company account</span> instead?</b></p><br />
+        <button on:click={() => handleDecision('yes')}>Yes</button>
+        <button on:click={() => handleDecision('no')}>No</button>
+      </div>
+    </div>
   {/if}
-
-  <div class="left-align">
-    If you already have a Common Good account,<a class="signup inline-link" data-testid="lnk-signup" href="/sign-in" target="_blank">Sign In.</a>
   </div>
-  </div>
-
 </section>
 
 <style lang='stylus'>
@@ -326,6 +276,40 @@
     border-color: #6200ea;
   }
 
+  @keyframes fadeIn {
+    from {
+          opacity: 0;
+    }
+    to {
+          opacity: 1;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Ensure this value is higher than Cropper's z-index */
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .confirmation-dialogue {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1051; /* This ensures the dialogue is above the overlay */
+    margin: 20px; /* This centers the dialogue in the overlay */
+  }
+
   input {
     padding-top: 1rem;
     padding-bottom: 0.25rem;
@@ -338,6 +322,15 @@
     bottom: 0px;
     font-size: 10px;
   }
+
+  .input-container input[type="email"]:focus ~ .floating-label,
+  .input-container input[type="email"]:not(:placeholder-shown) ~ .floating-label {
+    top: 0px;
+    left: 12px;
+    font-size: 10px;
+    color: #333; /* Change color or any other property specifically for email inputs */
+  }
+
 
   .floating-label {
     position: absolute;

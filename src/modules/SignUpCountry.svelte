@@ -3,11 +3,6 @@
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
 
-  import Accordion from './Accordion.svelte'
-  import SlidingModal from "#modules/SlidingModal.svelte";
-  import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
-  import StepsLeft from "#modules/StepsLeft.svelte";
-
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   let selectedCountry = 'US'; // To bind with select dropdown
   let postalCode = '';
@@ -27,7 +22,7 @@
   }
 
   // Function to hide all hints when input is not focused
-    function handleBlur() {
+  function handleBlur() {
     showReferHint = false;
   }
 
@@ -37,7 +32,6 @@
     // need to send the token to backend for validation
     // based on the response, then proceed
     u.go('agreement');
-    
   }
 
   // ReCaptcha Enterprise v3 - no user interaction, generate token
@@ -74,9 +68,7 @@
 
     <div class='content'>
       <h2>
-        <div class="text-with-icon">
-          <span>Sign Up</span>
-        </div>
+          <span>Sign Up - Personal Account</span>
       </h2>
 
       <form id='demo-form' on:submit|preventDefault={handleFormSubmit}>
@@ -110,7 +102,7 @@
             type="text"
             autocomplete="off" 
             autocapitalize="off" 
-            bind:value={referredBy} 
+            bind:value={referredBy}
             on:focus={handleReferFocus}
             on:blur={handleBlur}
           />

@@ -16,7 +16,7 @@
     let showRoutingHint = false;
     let showAccountHint = false;
 
-    let showModal = false; // This variable controls the visibility of the modal
+    let showModal = true; // This variable controls the visibility of the modal
 
     // This function toggles the visibility state of the modal
     function toggleModal() {
@@ -47,37 +47,6 @@
 
     function handleDateChange(event) {
         credentials.birthday = event.target.value;
-    }
-
-    async function signIn() {
-        statusMsg = 'Finding your account(s)...'
-        try {
-            // replace with FUND url
-            const res = await u.postRequest('fund', credentials)
-            st.setAcctChoices(res.accounts)
-            st.setCorrupt(null) // retry any failed (corrupt) transactions
-            if (res.accounts.length > 1) {
-                u.go('link-account')
-            } else {
-                // Skip /link-account and use individual account settings
-                st.setMe(res.accounts[0])
-                st.setShowDash(true)
-                st.setPayOk(true)
-                st.setAllowShow(true)
-                u.go('home')
-            }
-        } catch (er) {
-            st.resetNetwork()
-            if (u.isTimeout(er) || !$st.online) {
-                showEr('The server is unavailable. Check your internet connection and try again.')
-            } else if (er.message == 403) { // forbidden
-                showEr('That account is not completely set up. Sign back in at CommonGood.earth to complete it.')
-            } else {
-                console.log(er)
-                // consider better error handling strat here
-                showEr(er)
-            }
-        }
     }
 
     const handleFormSubmit = () => {
@@ -370,5 +339,4 @@
       height: 100%;
       background-color: mediumblue; /* Color of the progress */
   }
-
 </style>
