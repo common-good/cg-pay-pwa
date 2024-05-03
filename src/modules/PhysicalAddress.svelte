@@ -7,35 +7,31 @@
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import { physicalAddress } from '#store.js';
   import Range from "./Range.svelte"
+  import {onMount} from "svelte";
 
-  let value = 42;
   let theme = "default";
 
   let formValues = $physicalAddress;
 
-  // let physicalAddress = {
-  //   streetAddress: '',
-  //   city: '',
-  //   state: '',
-  //   country: '',
-  //   postalCode: '',
-  //   rentOrOwn: '',
-  //   howLongYears: '',
-  //   howLongMonths: '',
-  // };
   let statusMsg = '';
 
   async function submitPhysicalAddress() {
     physicalAddress.set(formValues);
     u.go('mailing-address');
   }
+
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+    st.setNavigatedFromBack(false);
+  });
 </script>
 
 <svelte:head>
   <title>CGPay - Contact Information</title>
 </svelte:head>
 
-<section class="page card" id="contact-info">
+<section class="page card" id="contact-info" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
   <div class="progress-container">
     <div class="progress-bar" style="width: 49%"></div>

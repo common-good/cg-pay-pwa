@@ -64,6 +64,8 @@ export const createStore = () => {
     return s
   }
 
+
+
   function setst(newS) { update(s => { return cache = save(newS) } )}
   function setv(k, v, fromTest = false) { update(s => { s[k] = v; return cache = save(s, k) }); tSetV(k, v, fromTest); return v }
 //  function setkv(k, k2, v, fromTest = false) { ('k', k, 'k2', k2, 'v', v, 'showHdr', cache.showHdr); cache[k][k2] = v; setv(k, k2, fromTest); return v }
@@ -153,6 +155,14 @@ export const createStore = () => {
           }
         }
       }
+    },
+
+    setNavigatedFromBack(value) {
+      sessionStorage.setItem('navigatedFromBack', value.toString());
+    },
+
+    getNavigatedFromBack() {
+      return sessionStorage.getItem('navigatedFromBack') === 'true';
     },
 
     bump(k)  { if (u.testing()) { cache[k]++; setv(k, cache[k]) } },
@@ -277,7 +287,6 @@ export const createStore = () => {
 }
 
 export default createStore()
-
 
 export const physicalAddress = writable({
   streetAddress: '',

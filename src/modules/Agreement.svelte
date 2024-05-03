@@ -6,6 +6,8 @@
     import SlidingModal from "#modules/SlidingModal.svelte";
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
+    import {onMount} from "svelte";
+    import st from "#store.js";
 
     let showModal = true;
 
@@ -34,13 +36,24 @@
         showModal = !showModal;
     }
 
+    let allExpanded = true;
+
+    function toggleAllAccordions() {
+        allExpanded = !allExpanded;
+    }
+
+    let cameFromBack = st.getNavigatedFromBack();
+
+    onMount(() => {
+        st.setNavigatedFromBack(false);
+    });
 </script>
 
 <svelte:head>
     <title>CGPay - Agreement</title>
 </svelte:head>
 
-<section class="page card" id="country-select">
+<section class="page card" id="country-select" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
         <div class="progress-bar" style="width: 27%"></div>
@@ -64,18 +77,21 @@
             </div>
 
         </h2>
-        <strong><label style="color: red; font-size: 9px">Please actually read it, so you know what you're agreeing to. It's short.</label></strong>
+        <strong><label style="color: red; font-size: 14px">Please review this agreement carefully before proceeding.
+            It's short.</label></strong>
 
-
+        <span class="toggle-all" on:click="{toggleAllAccordions}">
+            {allExpanded ? 'Collapse All Sections' : 'Expand All Sections'}
+        </span>
         <div id="accordionContainer">
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">1. Who</span>
                 <div slot="details">
                     <p>I make this agreement with all Common Good <span on:click={() => toggleModal('member')} class="link">Members</span> and <span on:click={() => toggleModal('memberOrganization')} class="link">Member Organizations</span> everywhere — especially with Members and Member Organizations in my
                         <span on:click={() => toggleModal('cgc')} class="link">Common Good Community</span></p>
                 </div>
             </Accordion>
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">2. Community control</span>
                 <div slot="details">
                     <p>I understand we can use the Common Good System, as a democratic community,
@@ -84,7 +100,7 @@
                 </div>
             </Accordion>
 
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">3. Investing together</span>
                 <div slot="details">
                     <p> I understand whenever I put money in my Common Good account, there is more money in
@@ -93,32 +109,32 @@
                 </div>
             </Accordion>
 
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">4. Backing together</span>
                 <div slot="details">
                     <p> I understand my Common Good credit is <span on:click={() => toggleModal('backed')} class="link">backed</span> 100% or more — partly by money in the Dollar Pool and partly by Members and Member Organizations.</p>
                 </div>
             </Accordion>
 
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">5. Accepting payments</span>
                 <div slot="details">
                     <p>I will accept Common Good credit as payment, <span on:click={() => toggleModal('withoutLimit')} class="link">without limit or surcharge</span>.</p>
                 </div>
             </Accordion>
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">6. Account Balance</span>
                 <div slot="details">
                     <p>If I spend more than the balance in my Common Good account, resulting in a negative balance, I will bring my balance up to zero or more within 30 days.</p>
                 </div>
             </Accordion>
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">7. Disputes</span>
                 <div slot="details">
                     <p>When there is a dispute, I will follow the <span on:click={() => toggleModal('disputes')} class="link">Common Good Dispute Resolution Process</span> and will honor its outcome.</p>
                 </div>
             </Accordion>
-            <Accordion open="true">
+            <Accordion open={allExpanded}>
                 <span slot="head">8. Changes</span>
                 <div slot="details">
                     <p>I understand I will have the <span on:click={() => toggleModal('participate')} class="link">opportunity to participate</span> in any decision to change this Agreement, and if I use my account after changes have been approved, that means I agree to those changes.</p>
@@ -341,5 +357,12 @@
       background-color: mediumblue; /* Color of the progress */
   }
 
-
+  .toggle-all {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: block;
+  }
 </style>

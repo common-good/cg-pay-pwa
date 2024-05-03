@@ -2,6 +2,8 @@
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+  import {onMount} from "svelte";
+  import st from "#store.js";
 
   let contactInfo = {
     yourName: '',
@@ -35,13 +37,19 @@
   //   TODO
       u.go('physical-address');
   }
+
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+    st.setNavigatedFromBack(false);
+  });
 </script>
 
 <svelte:head>
   <title>CGPay - Contact Information</title>
 </svelte:head>
 
-<section class="page card" id="contact-info">
+<section class="page card" id="contact-info" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
   <div class="progress-container">
     <div class="progress-bar" style="width: 44%"></div>

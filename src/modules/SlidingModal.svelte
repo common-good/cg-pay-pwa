@@ -2,16 +2,17 @@
     import { slide } from 'svelte/transition';
 
     export let showModal = false; // Prop to control visibility
-    function toggleModal() {
+    function toggle() {
         showModal = !showModal;
     }
 </script>
-
 {#if showModal}
-    <div class="backdrop" on:click={toggleModal}></div>
+    <div class="backdrop" on:click={toggle}></div>
     <div class="modal" transition:slide={{ y: 300, duration: 300 }}>
-        <div class="close-button" on:click={toggleModal}>X</div>
-        <slot></slot> <!-- This is the placeholder for custom content -->
+        <div class="close-button" on:click={toggle}>X</div>
+        <div class="modal-content"> <!-- Container for scrollable content -->
+            <slot></slot> <!-- Placeholder for custom content -->
+        </div>
     </div>
 {/if}
 
@@ -25,6 +26,14 @@
         border-top: 1px solid #ccc;
         padding: 20px;
         z-index: 1000;
+        max-height: 60vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-content {
+        overflow-y: auto; /* Enables vertical scrolling */
+        flex-grow: 1; /* Allows the container to expand to fill available space */
     }
 
     .close-button {

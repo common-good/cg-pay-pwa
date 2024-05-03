@@ -45,19 +45,22 @@
 </svelte:head>
 
 <section class="page card" id="reset-password">
-    <button data-testid="btn-nav" class="btn top-left" aria-label="Menu" on:click={u.goBack}>
-        <BackIcon width={'100%'} height={'100%'} />
-    </button>
-    <header>
-        <img src= { cgLogo } alt='Common Good Logo' />
-        <h1>CGPay{ u.realData() ? '' : ' DEMO' }</h1>
+    <header style=" align-items: left" >
+        <button data-testid="btn-nav" class="back-button" aria-label="Go back" on:click={u.goBack} >
+            <BackIcon width={'100%'} height={'100%'} color={'gray'}/>
+        </button>
+        <img src="{cgLogo}" alt="Common Good Logo" style="margin-top: -50px">
+        <h1 style="margin-top: -50px">CGPay{u.realData() ? '' : ' DEMO'}</h1>
     </header>
 
     <div class='content'>
         <h2>Request New Password</h2>
         <form on:submit|preventDefault={signIn}>
             <small>Your account ID or email address</small>
-            <input data-testid="input-identifier" name="account-id" type="text" placeholder="Account" autocomplete="off" autocapitalize="off" bind:value={ credentials.account } required />
+            <div class="input-container">
+                <input data-testid="input-identifier" name="account-id" type="text" autocomplete="off" autocapitalize="off" bind:value={ credentials.account } required />
+                <span class="floating-label">Account</span>
+            </div>
             <button data-testid="btn-signin" type="submit">Submit</button>
         </form>
     </div>
@@ -132,19 +135,38 @@
 
   .back-button {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
+    cursor: pointer; /* Makes it clear the icon is clickable */
+    padding: 5px 10px; /* Padding around the text or icon for better touch */
+    width: 10%;
+    top: 55px;
+    left: 15px;
+    border: none; /* No border for a cleaner look */
+    background-color: transparent; /* Transparent background */
+    font-size: 10px; /* Larger font size for visibility */
+    transform: scale(0.8);
+    color: green;
+  }
 
-    border: none;
-    cursor: pointer;
-    background-image: url('/src/modules/assets/back-arrow.png'); /* Adjusted path */
 
-    background-color: transparent;
-    background-size: 30px 30px; /* Size of the arrow image */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
+  input:focus ~ .floating-label,
+  input:not(:focus):valid ~ .floating-label{
+    top: 0px;
+    left: 12px;
+    font-size: 10px;
+  }
 
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 12px;
+    top: 12px;
+    color: gray;
+    transition: 0.2s ease all;
+  }
+
+  .input-container {
+    position: relative; /* Establishes a positioning context */
+    display: inline-block; /* Or 'block', depending on your layout */
+    width: 100%; /* Ensures the container takes the full width */
   }
 </style>

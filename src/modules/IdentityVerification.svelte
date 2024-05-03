@@ -7,14 +7,12 @@
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
     import SlidingModal from "#modules/SlidingModal.svelte";
+    import {onMount} from "svelte";
 
     let credentials = { legalName: '', ssn: '', birthday: ''}
 
-    let showHint = false; // Controls the visibility of the hint image
-    let showDetails = false;
 
-    let showRoutingHint = false;
-    let showAccountHint = false;
+    let showNameHint = false;
 
     let showModal = true; // This variable controls the visibility of the modal
 
@@ -23,26 +21,14 @@
         showModal = !showModal;
     }
 
-    // Function to display the routing number hint
-    function handleRoutingFocus() {
-        showRoutingHint = true;
-        showAccountHint = false; // Ensure the account hint is hidden
-    }
-
-    // Function to display the account number hint
-    function handleAccountFocus() {
-        showAccountHint = true;
-        showRoutingHint = false; // Ensure the routing hint is hidden
+    // Function to display the name input hint
+    function handleNameInputFocus() {
+        showNameHint = true;
     }
 
     // Function to hide all hints when input is not focused
-    function handleBlur() {
-        showRoutingHint = false;
-        showAccountHint = false;
-    }
-
-    function toggleDetails() {
-        showDetails = !showDetails;
+    function handleNameInputBlur() {
+        showNameHint = false;
     }
 
     function handleDateChange(event) {
@@ -60,14 +46,12 @@
         // Reset the custom validation message after the input changes, to ensure it's re-evaluated
         event.target.oninput = () => event.target.setCustomValidity('');
     }
-    const toggleHint = () => {
-        event.stopPropagation(); // Prevent the click from being detected by clickOutside
-        showHint = !showHint;
-    };
+    
+    let cameFromBack = st.getNavigatedFromBack();
 
-    const closeHint = () => {
-        showHint = false;
-    };
+    onMount(() => {
+        st.setNavigatedFromBack(false);
+    });
 
 </script>
 
@@ -75,7 +59,7 @@
     <title>CGPay - Fund</title>
 </svelte:head>
 
-<section class="page card" id="fund">
+<section class="page card" id="fund" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
         <div class="progress-bar" style="width: 33%"></div>
@@ -108,9 +92,9 @@
 
         <form on:submit|preventDefault={handleFormSubmit}>
             <div class="input-container">
-                <input data-testid="input-identifier" name="routing-id" type="text" autocapitalize="off" bind:value={credentials.legalName} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="routing-id" type="text" autocapitalize="off" bind:value={credentials.legalName} required on:focus={handleNameInputFocus} on:blur={handleNameInputBlur} />
                 <span class="floating-label">Your Legal Name</span>
-                {#if showRoutingHint}
+                {#if showNameHint}
                     <div class="floating-box">
                         If your legal name is different (or longer), correct it here.
                     </div>
@@ -118,7 +102,7 @@
             </div>
 
             <div class="input-container">
-                <input data-testid="input-identifier" name="account-id" type="text" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.ssn} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" name="account-id" type="text" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.ssn} required />
                 <span class="floating-label">Your SSN (Social Security Number)</span>
             </div>
             <div class="input-container">

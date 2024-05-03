@@ -8,6 +8,7 @@
   import constants from "#constants.js";
   import SlidingModal from "#modules/SlidingModal.svelte";
   import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
+  import st from "#store.js";
 
   let donation = {
     giftLevel: '',
@@ -97,6 +98,8 @@
     }
   }
 
+  let cameFromBack = st.getNavigatedFromBack();
+
   // Fetch donation options on component mount
   onMount(async () => {
     try {
@@ -106,6 +109,8 @@
       console.error(err);
       statusMsg = 'Failed to load donation options.';
     }
+    st.setNavigatedFromBack(false);
+
   });
 
   async function submitForm() {
@@ -118,7 +123,7 @@
   <title>Donate</title>
 </svelte:head>
 
-<section class="page card" id="donate">
+<section class="page card" id="donate" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
 
     <div class="progress-container">

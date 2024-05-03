@@ -7,8 +7,7 @@
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import SlidingModal from "#modules/SlidingModal.svelte";
   import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
-  import { fade } from 'svelte/transition';
-  import StepsLeft from "#modules/StepsLeft.svelte";
+  import {onMount} from "svelte";
 
   let selectedPhoto;
   let cropper;
@@ -33,7 +32,7 @@
   function onImageLoad() {
       const imageElement = document.getElementById('image-to-crop');
       cropper = new Cropper(imageElement, {
-          aspectRatio: 1, // or any ratio you desire
+          aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 0.8,
       });
@@ -71,13 +70,20 @@
       // User can adjust the crop again
   }
 
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+      st.setNavigatedFromBack(false);
+  });
+
+
 </script>
 
 <svelte:head>
     <title>CGPay - Photo ID</title>
 </svelte:head>
 
-<section class="page card" id="photo-upload-module">
+<section class="page card" id="photo-upload-module" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
         <div class="progress-bar" style="width: 38%"></div>

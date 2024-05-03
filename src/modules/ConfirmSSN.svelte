@@ -3,6 +3,7 @@
   import st from '#store.js';
   import cgLogo from '#modules/assets/cg-logo-300.png?webp';
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+  import { fade } from 'svelte/transition';
 
   let credentials = {
     ssn: ''
@@ -51,8 +52,11 @@
     event.target.oninput = () => event.target.setCustomValidity('');
   }
 
+  let showConfirmationDialogue = false;
+
   const handleFundSubmit = () => {
     // Handle form submission logic here
+    showConfirmationDialogue = true;
     // console.log({routingNumber, bankAccount, refills, targetBalance, minTransfer, saveWeekly});
   };
 </script>
@@ -61,7 +65,7 @@
   <title>CGPay - Fund</title>
 </svelte:head>
 
-<section class="page card" id="confirm-ssn">
+<section class="page card" id="confirm-ssn" in:fade={{ delay: 200, duration: 400 }}>
 
 
   <div class="progress-container">
@@ -99,6 +103,14 @@
 
       <small>Required by the IRS if you accept more than $600 a year in Common Good payments.</small>
 
+      {#if showConfirmationDialogue}
+        <div class="overlay">
+          <div class="confirmation-dialogue">
+            <p><strong>Congratulations! Your sign-up is complete. Welcome to the Common Good Community!</strong></p><br />
+            <button on:click={() => u.go("sign-in")}>OK</button>
+          </div>
+        </div>
+      {/if}
 
       <button data-testid="btn-connect" type="submit">Submit</button>
     </form>
@@ -209,5 +221,28 @@
       background-color: mediumblue; /* Color of the progress */
     }
 
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1050; /* Ensure this value is higher than Cropper's z-index */
+      animation: fadeIn 0.5s ease-out;
+    }
 
+    .confirmation-dialogue {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1051; /* This ensures the dialogue is above the overlay */
+      margin: 20px; /* This centers the dialogue in the overlay */
+    }
 </style>

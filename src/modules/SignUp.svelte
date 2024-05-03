@@ -1,23 +1,32 @@
 <script>
-  import st from'#store.js'
+  import st from '#store.js'
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
-  import StepsLeft from "#modules/StepsLeft.svelte";
 
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+  import {onMount} from "svelte";
 
   let personalCredentials = { fullName: '', email: '', phone: ''}
-  let companyCredentials = { companyType: '', fullName: '', email: '', phone: ''}
   let statusMsg = ''
   let accountType = 'personal'; // Default to personal account
+
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+    st.setNavigatedFromBack(false);
+  });
+
+  let emailExists = false;
 
   function showEr(msg) { u.alert(msg); statusMsg = '' }
 
   const handleSubmit = () => {
-        // Handle form submission logic here
-        // console.log({routingNumber, bankAccount, refills, targetBalance, minTransfer, saveWeekly});
-        u.go('sign-up-country');
-    };
+    if (personalCredentials.email === "exists@gmail.com") {
+      emailExists = true;
+    } else {
+      u.go('sign-up-country');
+    }
+  };
 
   // handle pop up hint
   let showNameHint = false;
@@ -40,7 +49,7 @@
     showEmailHint = false;
   }
 
-  let showConfirmationDialogue = true;
+  let showConfirmationDialogue = false;
 
   function handleDecision(decision) {
     if (decision === 'yes') {
@@ -48,13 +57,14 @@
     }
     showConfirmationDialogue = false; // This will close the dialogue in either case
   }
+
 </script>
 
 <svelte:head>
   <title>CGPay - Sign Up</title>
 </svelte:head>
 
-<section class="page card" id="sign-up">
+<section class="page card" id="sign-up" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
   <div class="progress-container">
     <div class="progress-bar" style="width: 11%"></div>
@@ -112,6 +122,16 @@
         <p><b>You are currently signing up for a <span style="color: red;">personal account</span>. Would you like to sign up for a <span style="color: red;">company account</span> instead?</b></p><br />
         <button on:click={() => handleDecision('yes')}>Yes</button>
         <button on:click={() => handleDecision('no')}>No</button>
+      </div>
+    </div>
+  {/if}
+
+  {#if emailExists}
+    <div class="overlay">
+      <div class="confirmation-dialogue">
+        <p><strong>Your email is already associated with an existing account. Would you like to sign in instead?</strong></p><br />
+        <button on:click={() => u.go("sign-in")}>Yes, Sign In</button>
+        <button on:click={() => {emailExists = false}}>No, I will try a different email</button>
       </div>
     </div>
   {/if}
@@ -185,19 +205,6 @@
 
   button[data-testid="btn-connect"] {
       margin-top: 20px;
-  }
-
-  .overlay {
-    position: fixed; /* Use fixed positioning to cover the whole screen */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    display: flex;
-    align-items: center; /* Center the image vertically */
-    justify-content: center; /* Center the image horizontally */
-    z-index: 1000; /* Ensure the overlay is above other content */
   }
 
   .hint-image {

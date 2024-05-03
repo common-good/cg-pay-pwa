@@ -8,6 +8,7 @@
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import SlidingModal from "#modules/SlidingModal.svelte";
+  import st from "#store.js";
 
   let preferences = {
     isCompany: false,
@@ -37,7 +38,11 @@
       console.error(err);
       statusMsg = 'Failed to update preferences. Please try again.';
     }
+    u.go('donate');
   }
+
+  let cameFromBack = st.getNavigatedFromBack();
+
 
   // Populate preferences with existing user preferences on component mount
   onMount(async () => {
@@ -48,6 +53,8 @@
       console.error(err);
       statusMsg = 'Failed to load preferences.';
     }
+    st.setNavigatedFromBack(false);
+
   });
 </script>
 
@@ -55,7 +62,7 @@
   <title>Account Preferences</title>
 </svelte:head>
 
-<section class="page card" id="preferences">
+<section class="page card" id="preferences" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
         <div class="progress-bar" style="width: 66%"></div>
@@ -72,8 +79,8 @@
   <SlidingModal bind:showModal>
     <h2>Disclaimers required by the IRS:</h2>
     <p>Your choice of how to receive statements applies to all statements you receive from now on. You can change your preference at any time by returning to this Preferences page (on the Settings menu) or by notifying the Regional Administrator by mail:  {constants.CGF_LEGALNAME}, {constants.CGF_POSTALADDR}. Any change will be confirmed in writing (electronically if you accept electronic statements, otherwise by US Mail). You may also ask the Regional Administrator for a paper copy without changing your preference for electronic statements in the future.</p>
-    <p>To view your electronic statements, you need a typical computer or mobile device connected to the internet, including an email program and a web browser. To print the statements, you need a printer.</p>
-    <p>Your annual tax statements will be accessible online from January through December.</p>
+     <br /><p>To view your electronic statements, you need a typical computer or mobile device connected to the internet, including an email program and a web browser. To print the statements, you need a printer.</p>
+    <br /><p>Your annual tax statements will be accessible online from January through December.</p>
   </SlidingModal>
 
   <div class='content'>
@@ -130,8 +137,8 @@
       </form>
     </div>
     <div class="button-container">
-      <button type="submit" onclick="location.href='donate'">Next</button>
-      <button type="button" onclick="location.href='donate'" style="background-color: gray; border-color: gray">Skip for now</button>
+      <button type="submit" on:click={updatePreferences}>Next</button>
+      <button type="button" on:click={updatePreferences} style="background-color: gray; border-color: gray">Skip for now</button>
     </div>
   </div>
   <!--{#if !showAdvancedOptions}-->

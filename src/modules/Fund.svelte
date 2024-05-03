@@ -2,18 +2,16 @@
     import u from "#utils.js";
     import st from'#store.js'
     import cgLogo from '#modules/assets/cg-logo-300.png?webp'
-    import checkHint from '#modules/assets/check-hint.png'
     import Accordion from './Accordion.svelte'
-    import StepsLeft from './StepsLeft.svelte';
 
     import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
     import HelpBoxIcon from "svelte-material-icons/HelpBox.svelte"
     import SlidingModal from "#modules/SlidingModal.svelte";
     import Switch from './Switch.svelte'
+    import {onMount} from "svelte";
 
     let credentials = { routingNumber: '', bankAccount: '', refills: 'false'}
 
-    let showHint = false; // Controls the visibility of the hint image
     let showDetails = false;
 
     let showRoutingHint = false;
@@ -44,42 +42,6 @@
         showAccountHint = false;
     }
 
-    function toggleDetails() {
-        showDetails = !showDetails;
-    }
-
-
-    async function signIn() {
-        statusMsg = 'Finding your account(s)...'
-        try {
-            // replace with FUND url
-            const res = await u.postRequest('fund', credentials)
-            st.setAcctChoices(res.accounts)
-            st.setCorrupt(null) // retry any failed (corrupt) transactions
-            if (res.accounts.length > 1) {
-                u.go('link-account')
-            } else {
-                // Skip /link-account and use individual account settings
-                st.setMe(res.accounts[0])
-                st.setShowDash(true)
-                st.setPayOk(true)
-                st.setAllowShow(true)
-                u.go('home')
-            }
-        } catch (er) {
-            st.resetNetwork()
-            if (u.isTimeout(er) || !$st.online) {
-                showEr('The server is unavailable. Check your internet connection and try again.')
-            } else if (er.message == 403) { // forbidden
-                showEr('That account is not completely set up. Sign back in at CommonGood.earth to complete it.')
-            } else {
-                console.log(er)
-                // consider better error handling strat here
-                showEr(er)
-            }
-        }
-    }
-
     const handleFundSubmit = () => {
         // Handle form submission logic here
         credentials.refills = credentials.refills === "Yes" ? "true" : "false";
@@ -97,13 +59,19 @@
         // Reset the custom validation message after the input changes, to ensure it's re-evaluated
         event.target.oninput = () => event.target.setCustomValidity('');
     }
+
+    let cameFromBack = st.getNavigatedFromBack();
+
+    onMount(() => {
+        st.setNavigatedFromBack(false);
+    });
 </script>
 
 <svelte:head>
     <title>CGPay - Fund</title>
 </svelte:head>
 
-<section class="page card" id="fund">
+<section class="page card" id="fund" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
         <div class="progress-bar" style="width: 88%"></div>
@@ -138,7 +106,7 @@
 
         <form on:submit|preventDefault={handleFundSubmit}>
             <div class="input-container">
-                <input data-testid="input-identifier" name="routing-id" type="text" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.routingNumber} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier"  placeholder=" " name="routing-id" type="text" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.routingNumber} required on:focus={handleRoutingFocus} on:blur={handleBlur} />
                 <span class="floating-label">Routing</span>
                 {#if showRoutingHint}
                     <div class="floating-box">
@@ -148,7 +116,7 @@
             </div>
 
             <div class="input-container">
-                <input data-testid="input-identifier" name="account-id" type="text" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.bankAccount} required on:focus={handleAccountFocus} on:blur={handleBlur} />
+                <input data-testid="input-identifier" placeholder=" " name="account-id" type="text" autocomplete="off" pattern="\d*" on:invalid={setCustomMessage} bind:value={credentials.bankAccount} required on:focus={handleAccountFocus} on:blur={handleBlur} />
                 <span class="floating-label">Account</span>
                 {#if showAccountHint}
                     <div class="floating-box">
@@ -336,12 +304,19 @@
         padding-bottom: 0.25rem;
     }
 
+    input:not(:placeholder-shown) ~ .floating-label,
+    input:focus ~ .floating-label {
+      top: 0px;
+      left: 12px;
+      bottom: 0px;
+      font-size: 10px;
+    }
+
     input:focus ~ .floating-label,
     input:not(:focus):valid ~ .floating-label{
-        top: 0px;
-        left: 12px;
-        bottom: 0px;
-        font-size: 10px;
+      top: 0px;
+      left: 12px;
+      font-size: 10px;
     }
 
     .floating-label {

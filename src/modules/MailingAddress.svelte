@@ -3,10 +3,10 @@
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
-  import StepsLeft from "#modules/StepsLeft.svelte";
 
   import { mailingAddress, physicalAddress } from '#store.js';
   import { get } from 'svelte/store';
+  import {onMount} from "svelte";
 
   let isSameAsPhysical = false;
 
@@ -31,13 +31,19 @@
   async function submitMailingAddress() {
   //   TODO
   }
+
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+    st.setNavigatedFromBack(false);
+  });
 </script>
 
 <svelte:head>
   <title>CGPay - Contact Information</title>
 </svelte:head>
 
-<section class="page card" id="mailing-address">
+<section class="page card" id="mailing-address" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
   <div class="progress-container">
     <div class="progress-bar" style="width: 55%"></div>

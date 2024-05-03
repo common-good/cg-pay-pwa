@@ -1,9 +1,10 @@
 <script>
-  import st from'#store.js'
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
 
   import BackIcon from "svelte-material-icons/ChevronLeft.svelte"
+  import st from "#store.js";
+  import {onMount} from "svelte";
   let selectedCountry = 'US'; // To bind with select dropdown
   let postalCode = '';
   let referredBy = '';
@@ -42,13 +43,20 @@
     });
   }
 
+  let cameFromBack = st.getNavigatedFromBack();
+
+  onMount(() => {
+    st.setNavigatedFromBack(false);
+  });
+
+
 </script>
 
   <svelte:head>
     <title>CGPay - Sign Up</title>
   </svelte:head>
 
-  <section class="page card" id="country-select">
+  <section class="page card" id="country-select" in:u.slideEnter={{ direction: cameFromBack ? 'right' : 'left' }}>
 
     <div class="progress-container">
       <div class="progress-bar" style="width: 22%"></div>
@@ -95,10 +103,10 @@
 
         <label for="referred-by">Where did you hear about us? (optional)</label>
         <div class="input-container">
-          <input 
-            data-testid="input-referred-by" 
-            id="referred-by" 
-            name="referredBy" 
+          <input
+            data-testid="input-referred-by"
+            id="referred-by"
+            name="referredBy"
             type="text"
             autocomplete="off" 
             autocapitalize="off" 
@@ -106,7 +114,7 @@
             on:focus={handleReferFocus}
             on:blur={handleBlur}
           />
-          <span class="floating-label">Referred by</span>
+          <!--span class="floating-label">Referred by</span-->
           {#if showReferHint}
             <div class="floating-box">
               Name of company or person, web address, publication name, radio station name, or whatever
@@ -290,6 +298,13 @@
     top: 0px;
     left: 12px;
     bottom: 0px;
+    font-size: 10px;
+  }
+
+  #referred-by:not(:placeholder-shown) ~ .floating-label,
+  #referred-by:focus ~ .floating-label {
+    top: 0px;
+    left: 12px;
     font-size: 10px;
   }
 
