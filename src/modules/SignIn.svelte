@@ -56,8 +56,11 @@
       <label class="visuallyhidden" for="password">Password</label>
       <input data-testid="input-password" name="password" type="password" placeholder="Password" autocomplete="off" autocapitalize="off" bind:value={ credentials.password } required />
       <button data-testid="btn-signin" type="submit">Sign In</button>
-      <a data-testid="lnk-reset" href="https://new.commongood.earth/settings/password/" target="_blank">Reset password</a>
-       <a class="signup" data-testid="lnk-signup" href="https://new.commongood.earth/signup" target="_blank">Not a member yet? Sign Up</a>
+      <div class="bottom-links">
+        <a data-testid="lnk-reset" href="https://new.commongood.earth/settings/password/" target="_blank">Reset password</a>
+        <a class="signup" data-testid="lnk-signup" href="https://new.commongood.earth/signup" target="_blank">Sign Up</a>
+        <a data-testid="lnk-privacy" href="https://commongood.earth/how-it-works/privacy-and-security" target="_blank">Privacy policy</a>
+      </div>
       <p class="status">{statusMsg}</p>
     </form>
   </div>
@@ -65,14 +68,11 @@
 
 <style lang='stylus'>
   a
-    padding 0 $s-1
     color $c-blue
     text-decoration underline
-    text-underline-offset 1px
+    text-underline-offset 5px
     margin-bottom $s-2
-    width fit-content
-    &.signup
-      margin-bottom $s1
+    width auto
 
   button
     cgButton()
@@ -115,4 +115,14 @@
     font-style italic
     letter-spacing 0.0125rem
     text-align center
+
+  .bottom-links
+    width 100%
+    padding-right 5px
+    display flex
+    flex-direction row
+    justify-content: space-between
+
+  .signup
+    padding 0 22px 0 10px
 </style>
