@@ -4,6 +4,7 @@ import queryString from 'query-string'
 import { navigateTo } from 'svelte-router-spa'
 import u0 from '../utils0.js' // utilities shared with tests
 import QRCode from 'qrcode'
+import {quintOut} from "svelte/easing";
 
 const dig36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const regionLens = '111111112222222233333333333344444444'
@@ -234,13 +235,14 @@ const u = {
   pageUri() { return location.href.substring(location.href.lastIndexOf('/') + 1) },
   isApple() { return /iPhone|iPod|iPad/i.test(navigator.userAgent) },
   isAndroid() { return !u.isApple() && /Android/i.test(navigator.userAgent) },
-  go(page, setTrail = true) { 
+  go(page, setTrail = true) {
     if (setTrail) st.setTrail(u.st()?.pending ? '' : u.pageUri())
     st.setPending(false) // must come after setTrail
     st.setLeft(u.atHome(page) ? 'logo' : 'back')
     navigateTo('/' + page)
   },
-  goBack() { u.hide(); u.go(st.setTrail(), false) },
+  goBack() { u.hide(); st.setNavigatedFromBack(true);
+    u.go(st.setTrail(), false) },
 
   isSafari() {
     const ua = navigator.userAgent
@@ -265,6 +267,15 @@ const u = {
       return false
     } catch (er) { return Object.keys(u.st().accts).length < 20 }
   },
+
+  slideEnter(node, {direction}) {
+    const xOffset = direction === 'left' ? 100 : -100;
+    return {
+      duration: 400,
+      easing: quintOut,
+      css: t => `transform: translateX(${(1-t) * xOffset}%)`
+    };
+  }
 
   /*
   async function cgEncrypt(text) {
@@ -293,5 +304,7 @@ const u = {
           body: JSON.stringify(tx)
   */
 }
+
+
 
 export default u

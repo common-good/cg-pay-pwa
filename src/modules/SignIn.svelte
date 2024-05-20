@@ -1,4 +1,6 @@
 <script>
+  import { onMount } from 'svelte';
+
   import st from'#store.js'
   import u from '#utils.js'
   import cgLogo from '#modules/assets/cg-logo-300.png?webp'
@@ -7,6 +9,10 @@
   let statusMsg = ''
 
   function showEr(msg) { u.alert(msg); statusMsg = '' }
+
+  onMount(() => {
+    st.setTrail(u.pageUri());
+  });
 
   async function signIn() {
     statusMsg = 'Finding your account(s)...'
@@ -36,6 +42,17 @@
       }
     }
   }
+
+  function goToPasswordReset(event) {
+    event.preventDefault(); // Prevent the full page reload
+    u.go('reset-password'); // Use SvelteKit's goto function for client-side routing
+  }
+
+  function goToSignUp(event) {
+    event.preventDefault(); // Prevent the full page reload
+    u.go('sign-up'); // Use SvelteKit's goto function for client-side routing
+  }
+
 </script>
 
 <svelte:head>
@@ -56,8 +73,8 @@
       <label class="visuallyhidden" for="password">Password</label>
       <input data-testid="input-password" name="password" type="password" placeholder="Password" autocomplete="off" autocapitalize="off" bind:value={ credentials.password } required />
       <button data-testid="btn-signin" type="submit">Sign In</button>
-      <a data-testid="lnk-reset" href="https://new.commongood.earth/settings/password/" target="_blank">Reset password</a>
-       <a class="signup" data-testid="lnk-signup" href="https://new.commongood.earth/signup" target="_blank">Not a member yet? Sign Up</a>
+      <a data-testid="lnk-reset" on:click={goToPasswordReset} target="_blank">Reset password</a>
+       <a class="signup" data-testid="lnk-signup" on:click={goToSignUp} target="_blank">Not a member yet? Sign Up</a>
       <p class="status">{statusMsg}</p>
     </form>
   </div>
