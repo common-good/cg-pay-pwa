@@ -1,6 +1,6 @@
 // Utilities shared between app and tests (namespace u in both, since this is included in utils.js)
 import { sha256 } from 'js-sha256'
-
+const currencyFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true });
 const u = {
   just(which, obj) { // subset of object
     let res = {}; for (let k of u.ray(which)) res[k] = obj[k]
@@ -44,7 +44,7 @@ const u = {
 
   fmtDate(dt) { return new Date(dt < 1e11 ? dt * 1000 : dt).toLocaleDateString('en-us', { year:'numeric', month:'numeric', day:'numeric'}) },
   in(k, ks) { return ks.split(' ').includes(k) },
-  withCommas(num) { return (+num).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") },
+  withCommas(num) { return currencyFormat.format(+num) },
   testing() { return (typeof window !== 'undefined' && typeof window.testerPipe === 'function') },
   async tellTester(op, k = null, v = null) { return u.testing() ? await window.testerPipe(op, k, v) : null },
 
