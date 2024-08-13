@@ -25,7 +25,7 @@ const u = {
     if (!'[{'.includes(objString.charAt(0))) throw new Error('Invalid object string')
     return eval(`[${objString}]`)[0]
   },
-  fmtVersion(n) { n = n.toString(); return n.substring(0, 1) + '.' + n.substring(2, 3) + '.' + n.substring(3, 4) },
+  fmtVersion(n) { n = n.toString(); return n.substring(0, 1) + '.' + parseInt(n.substring(1, 3)) + '.' + parseInt(n.substring(3, 5)) },
 
   /**
    * Return Find the object, in a list of objects, that has a given keyed value.
