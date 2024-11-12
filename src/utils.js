@@ -230,10 +230,11 @@ const u = {
   goEr(msg) { st.setMsg(msg); u.go('home') },
   goHome(msg) { st.setMsg(msg); u.go('home') },
   atHome(page = '') { return (page ? page : u.pageUri()) == 'home' },
+  onPage(page) { return (u.pageUri() === page) },
   isTimeout(er) { return (typeof er === 'object' && (er.name == 'AbortError' || er.name == 'Offline')) },
   pageUri() { return location.href.substring(location.href.lastIndexOf('/') + 1) },
   isApple() { return /iPhone|iPod|iPad/i.test(navigator.userAgent) },
-  isAndroid() { return !u.isApple() && /Android/i.test(navigator.userAgent) },
+  isAndroid() { return /Android/i.test(navigator.userAgent) },
   go(page, setTrail = true) { 
     if (setTrail) st.setTrail(u.st()?.pending ? '' : u.pageUri())
     st.setPending(false) // must come after setTrail
