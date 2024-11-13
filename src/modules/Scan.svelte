@@ -26,10 +26,10 @@
     if (!$st.intent) u.goEr(u.crash('scan with no intent'))
 
     if (!u.testing()) try { // don't activate camera when testing (works whether or not headless)
-      scanner = new Html5Qrcode('scanner');
-      const scannerConfig = { fps: 1, qrbox: { width: 250, height: 250 } };
+      scanner = new Html5Qrcode('scanner')
+      const scannerConfig = { fps: 1, qrbox: { width: 250, height: 250 } }
       const onScanSuccess = (decodedText, decodedResult) => {
-        if (scanner) scanner.stop();
+        if (scanner) scanner.stop()
         scanner = null;
         st.setQr(decodedText)
         u.go($st.intent === 'scanIn' ? 'home' : 'tx')
@@ -46,18 +46,18 @@
       ).then(() => {
         isLoading = false;
       }).catch(() => {
-        scanner = null;
-        isLoading = false;
-        u.goEr('Error accessing camera.');
+        scanner = null
+        isLoading = false
+        u.goEr('Error accessing camera.')
       });
     } catch(er) {
-      scanner = null;
-       u.goEr(er.message)
+      scanner = null
+      u.goEr(er.message)
     }
   });
 
   onDestroy(() => {
-    if (scanner) scanner.stop();
+    if (scanner) scanner.stop()
   });
 </script>
 
