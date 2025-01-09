@@ -53,7 +53,7 @@
     } catch(er) {
        u.goEr(er.message)
     }
-  });
+  })
 
   onDestroy(() => {
     if (scanner) {
@@ -63,7 +63,7 @@
 
       }
     }
-  });
+  })
 </script>
 
 <svelte:head>
