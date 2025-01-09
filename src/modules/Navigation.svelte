@@ -30,8 +30,8 @@
 
   item('Go Home', () => u.go('home'), () => !u.atHome(), 'home')
   item('Scan Yourself In to Pay', scanIn, () => u.atHome() && $st.payOk == 'scan' && !$st.coPaying, 'scanIn') // for managers
-  item('Use Rear Camera', rearCamera, () => $st.cameraCount > 1 && $st.frontCamera, 'rear')
-  item('Use Front Camera', frontCamera, () => $st.cameraCount > 1 && !$st.frontCamera, 'front')
+  item('Use Rear Camera', rearCamera, () => !u.onPage('scan') && $st.frontCamera, 'rear')
+  item('Use Front Camera', frontCamera, () => !u.onPage('scan') && !$st.frontCamera, 'front')
   item('Exit Self Serve (signs out)', signOut, () => u.atHome() && $st.selfServe, 'selfOff')
   item('Switch Account', switchAccount, () => $st.choices?.length > 1 && u.pageUri() != 'link-account' && !st.selfServe, 'switch')
   item('Give Feedback', comment, () => st.linked(), 'comment')

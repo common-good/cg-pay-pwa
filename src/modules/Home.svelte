@@ -67,7 +67,7 @@
     st.setTimeout(null) // stop the timeout timer from interrupting us
     st.setTrail(null, true)
     st.setLeft('logo')
-    if ($st.frontCamera === null) st.setFrontCamera(!u.isApple() && !u.isAndroid())
+    if ($st.frontCamera === null) st.setFrontCamera(false) // Just default to rear camera.  Single camera devices use only camera anyway.
     if ($st.intent == 'scanIn') scanIn() // must precede setQr
     st.setQr(null) // no going back to previous customer
     if ($st.erMsg) showEr($st.erMsg)

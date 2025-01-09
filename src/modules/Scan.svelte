@@ -1,15 +1,15 @@
 <script>
-  import { Html5Qrcode } from 'html5-qrcode'
-  import { onMount } from 'svelte'
+  import {Html5Qrcode} from 'html5-qrcode'
+  import {onDestroy, onMount} from 'svelte'
   import st from'#store.js'
-  import u from '#utils.js'
+  import u from '../utils.js'
   import cgLogo from '#modules/assets/cg-logo-300-noR.png?webp'
 
   // --------------------------------------------
 
   let isLoading = true
-  let di = 0 // default to first device
   let action
+  let scanner
 
   switch($st.intent) {
     case 'charge':
@@ -24,29 +24,22 @@
 
   onMount(async () => {
     if (!$st.intent) u.goEr(u.crash('scan with no intent'))
-
     if (!u.testing()) try { // don't activate camera when testing (works whether or not headless)
       Html5Qrcode.getCameras().then(devices => {
+        scanner = new Html5Qrcode('scanner')
         if (devices?.length) {
           st.setCameraCount(devices.length)
-          if (devices.length > 1) { // choose front or rear camera as appropriate (ignore camera #3+)
-            if (/rear/.test(devices[0].label) ? $st.frontCamera : !$st.frontCamera) di = 1
-          }
-          const cameraId = devices[di].id
-          const scanner = new Html5Qrcode('scanner')
-
           scanner.start(
-            cameraId, 
-            { qrbox: { width: 250, height: 250 } }, // Configuration options.
+                  { facingMode: $st.frontCamera ? 'user' : 'environment' },
+                  { fps: 2, qrbox: { width: 250, height: 250 } }, // Configuration options.
 
-            async (decodedText, decodedResult) => { // Handle code
-              await scanner.stop()
-              st.setQr(decodedText)
-              u.go($st.intent == 'scanIn' ? 'home' : 'tx')
-            },
-            (erMsg) => { } // ignore "parse" errors -- no valid QR yet (keep scanning)
-
-          ).then((res) => {
+                  async (decodedText, decodedResult) => { // Handle code
+                    await scanner.stop()
+                    st.setQr(decodedText)
+                    u.go($st.intent === 'scanIn' ? 'home' : 'tx')
+                  },
+                  (erMsg) => { } // ignore "parse" errors -- no valid QR yet (keep scanning)
+          ).then((req) => {
             isLoading = false
           }).catch((er) => { // Handle scan error
             u.goEr(er.message)
@@ -54,11 +47,23 @@
         } else {
           u.goEr('No camera is available.')
         }
+      }).catch(() => {
+        u.goEr('No camera is available.')
       })
     } catch(er) {
-       u.goEr(er.message) 
+       u.goEr(er.message)
     }
-  })
+  });
+
+  onDestroy(() => {
+    if (scanner) {
+      try {
+        scanner.stop()
+      } catch(er) {
+
+      }
+    }
+  });
 </script>
 
 <svelte:head>
@@ -74,7 +79,7 @@
         <p>Loading Camera...</p>
       </div>
     {/if}
-      <div id='scanner'></div> 
+    <div id='scanner'></div>
   </div>
 </section>
 
